@@ -15,9 +15,11 @@ import Lottie from 'react-lottie';
 import buyLottieAnimation from '../public/lottie/buy-crypto.json';
 import growLottieAnimation from '../public/lottie/crypto-investment.json';
 import investLottieAnimation from '../public/lottie/supply-assets.json';
+import { useRouter } from 'next/navigation';
 
 export function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -50,11 +52,15 @@ export function LandingPage() {
     },
   };
 
+  const handleGetStarted = () => {
+    router.push('/home');
+  };
+
   return (
     <div className='flex flex-col min-h-screen'>
-      <header className='px-4 lg:px-6 h-14 flex items-center'>
+      <header className='px-4 lg:px-6 h-8 flex items-center'>
         <Link className='flex items-center justify-center' href='#'>
-          <p className='text-xl font-bold text-primary'>Coincase</p>
+          <div className='text-2xl font-bold text-primary'>Coincase</div>
         </Link>
         <button
           className='ml-auto lg:hidden'
@@ -73,19 +79,19 @@ export function LandingPage() {
           } lg:flex absolute top-14 left-0 right-0 bg-background lg:relative lg:top-0 flex-col lg:flex-row ml-auto gap-4 sm:gap-6 p-4 lg:p-0`}
         >
           <Link
-            className='text-sm font-medium hover:underline underline-offset-4'
+            className='text-sm font-medium hover:underline underline-offset-4 hover:bg-primary/10 p-2 rounded-md transition-colors duration-200'
             href='#'
           >
             Features
           </Link>
           <Link
-            className='text-sm font-medium hover:underline underline-offset-4'
+            className='text-sm font-medium hover:underline underline-offset-4 hover:bg-primary/10 p-2 rounded-md transition-colors duration-200'
             href='#'
           >
             How It Works
           </Link>
           <Link
-            className='text-sm font-medium hover:underline underline-offset-4'
+            className='text-sm font-medium hover:underline underline-offset-4 hover:bg-primary/10 p-2 rounded-md transition-colors duration-200'
             href='#'
           >
             Testimonials
@@ -98,21 +104,20 @@ export function LandingPage() {
             <div className='flex flex-col items-center space-y-4 text-center'>
               <div className='space-y-2'>
                 <h1 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none'>
-                  Invest Smarter with Coincase
+                  Invest using AI with Coincase
                 </h1>
                 <p className='mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400'>
-                  Curated crypto portfolios managed by experts. Invest
-                  confidently in the future of finance.
+                  Idea based crypto portfolios made by Experts & AI.
                 </p>
               </div>
               <div className='space-x-4'>
-                <Button>Get Started</Button>
+                <Button onClick={handleGetStarted}>Get Started</Button>
                 <Button variant='outline'>Learn More</Button>
               </div>
             </div>
           </div>
         </section>
-        <section className='w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800'>
+        <section className='w-full py-12 md:py-24 lg:py-32  '>
           <div className='container px-4 md:px-6'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
               Key Features
@@ -121,7 +126,7 @@ export function LandingPage() {
               <Card>
                 <CardHeader>
                   <Users className='h-10 w-10 mb-4' />
-                  <CardTitle>Creator-Driven Smallcases</CardTitle>
+                  <CardTitle>Creator-Driven Coincases</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p>
@@ -157,7 +162,7 @@ export function LandingPage() {
             </div>
           </div>
         </section>
-        <section className='w-full py-12 md:py-24 lg:py-32'>
+        <section className='w-full py-18 md:py-24 lg:py-2 rounded-xl'>
           <div className='container px-4 md:px-6'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
               How It Works
@@ -167,10 +172,10 @@ export function LandingPage() {
                 <div className='relative w-24 h-24 mb-4'>
                   <Lottie options={defaultOptions} height={96} width={96} />
                 </div>
-                <h3 className='mt-4 text-xl font-semibold'>
-                  Choose a Smallcase
+                <h3 className='mt-4 text-xl font-semibold '>
+                  Choose a Coincase
                 </h3>
-                <p className='mt-2 text-gray-500'>
+                <p className='mt-2 text-gray-500  dark:text-gray-400'>
                   Browse and select from expert-curated crypto portfolios.
                 </p>
               </li>
@@ -182,24 +187,24 @@ export function LandingPage() {
                     width={96}
                   />
                 </div>
-                <h3 className='mt-4 text-xl font-semibold'>Subscribe</h3>
-                <p className='mt-2 text-gray-500'>
-                  Invest in your chosen smallcase with ease and confidence.
+                <h3 className='mt-4 text-xl font-semibold '>Subscribe</h3>
+                <p className='mt-2 text-gray-500  dark:text-gray-400'>
+                  Invest in your chosen coincase with ease and confidence.
                 </p>
               </li>
               <li className='flex flex-col items-center text-center'>
                 <div className='relative w-24 h-24 mb-4'>
                   <Lottie options={growLottieOptions} height={96} width={96} />
                 </div>
-                <h3 className='mt-4 text-xl font-semibold'>Track & Grow</h3>
-                <p className='mt-2 text-gray-500'>
+                <h3 className='mt-4 text-xl font-semibold '>Track & Grow</h3>
+                <p className='mt-2 text-gray-500  dark:text-gray-400'>
                   Monitor performance and watch your investment grow.
                 </p>
               </li>
             </ol>
           </div>
         </section>
-        <section className='w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800'>
+        <section className='w-full py-12 md:py-24 lg:py-32  '>
           <div className='container px-4 md:px-6'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
               What Our Users Say
@@ -246,7 +251,7 @@ export function LandingPage() {
                 </p>
               </div>
               <div className='space-x-4'>
-                <Button>Get Started Now</Button>
+                <Button onClick={handleGetStarted}>Get Started Now</Button>
                 <Button variant='outline'>
                   Learn More <ArrowRight className='ml-2 h-4 w-4' />
                 </Button>
