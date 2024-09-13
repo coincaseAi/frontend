@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -18,10 +18,13 @@ import investLottieAnimation from '../public/lottie/supply-assets.json';
 import { useRouter } from 'next/navigation';
 import ToggleTheme from './ToggleTheme';
 import 'animate.css';
+import { Input } from '@/components/ui/input';
+import TypewriterPlaceholder from './TypewriterPlaceholder';
 
 export function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const [placeholderText, setPlaceholderText] = useState('');
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -58,9 +61,13 @@ export function LandingPage() {
     router.push('/home');
   };
 
+  const handlePlaceholderTextChange = (text) => {
+    setPlaceholderText(text);
+  };
+
   return (
     <div className='flex flex-col min-h-screen'>
-      <header className='px-4 lg:px-6 h-8 flex items-center'>
+      <header className='flex items-center h-8 px-4 lg:px-6'>
         <Link className='flex items-center justify-center' href='#'>
           <div className='text-2xl font-bold text-primary'>Coincase</div>
         </Link>
@@ -70,9 +77,9 @@ export function LandingPage() {
           aria-label='Toggle menu'
         >
           {isMenuOpen ? (
-            <X className='h-6 w-6' />
+            <X className='w-6 h-6' />
           ) : (
-            <Menu className='h-6 w-6' />
+            <Menu className='w-6 h-6' />
           )}
         </button>
         <nav
@@ -81,60 +88,76 @@ export function LandingPage() {
           } lg:flex absolute top-14 left-0 right-0 bg-background lg:relative lg:top-0 flex-col lg:flex-row ml-auto gap-4 sm:gap-6 p-4 lg:p-0`}
         >
           <Link
-            className='text-sm font-medium px-4 hover:bg-primary p-2 rounded-md transition-colors duration-200'
+            className='p-2 px-4 font-medium transition-colors duration-200 rounded-md hover:bg-primary'
             href='#'
           >
             Features
           </Link>
           <Link
-            className='text-sm font-medium px-4 hover:bg-primary p-2 rounded-md transition-colors duration-200'
+            className='p-2 px-4 font-medium transition-colors duration-200 rounded-md hover:bg-primary'
             href='#'
           >
             How It Works
           </Link>
           <Link
-            className='text-sm font-medium px-4 hover:bg-primary p-2 rounded-md transition-colors duration-200'
+            className='p-2 px-4 font-medium transition-colors duration-200 rounded-md hover:bg-primary'
             href='#'
           >
             Testimonials
           </Link>
         </nav>
       </header>
-      <main className='flex-grow'>
-        <section className='w-full py-12 md:py-24 lg:py-32 xl:py-48 min-h-screen flex items-center'>
-          <div className='container px-4 md:px-6'>
+      <main className='flex-grow '>
+        <section className='flex items-center w-full min-h-screen py-12 bg-center bg-cover md:py-24 lg:py-32 xl:py-48'>
+          <div className='container px-4 md:px-6 '>
             <div className='flex flex-col items-center space-y-4 text-center'>
-              <div className='space-y-2'>
-                <h1 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none animate__animated animate__fadeInUp   '>
+              <div className='max-w-lg space-y-4'>
+                <h1 className='text-5xl tracking-tighter text-transparent bg-gradient-to-r from-white to-primary bg-clip-text sm:text-4xl md:text-7xl lg:text-8xl animate__animated animate__fadeInUp'>
                   Invest using AI with&nbsp;
-                  <span className='text-primary'>Coincase</span>
+                  <span className='font-bold text-primary '>Coincase</span>
                 </h1>
                 <p
-                  className='mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400 animate__animated animate__fadeInUp '
+                  className='mx-auto max-w-[700px] text-gray-200 md:text-xl animate__animated animate__fadeInUp'
                   style={{ animationDelay: '0.5s' }}
                 >
-                  Idea based crypto portfolios made by Experts & AI.
+                  <i className='font-bold'>Idea</i> based crypto portfolios
+                  curated by the community and AI.
                 </p>
               </div>
               <div
-                className='space-x-4 animate__animated animate__fadeInUp'
+                className='w-full max-w-md mx-auto mt-8 animate__animated animate__fadeInUp'
                 style={{ animationDelay: '1s' }}
               >
-                <Button onClick={handleGetStarted}>Get Started</Button>
-                <Button variant='outline'>Learn More</Button>
+                <div className='relative flex items-center justify-center'>
+                  <Input
+                    type='text'
+                    placeholder={placeholderText}
+                    className='text-lg text-black bg-white rounded-lg'
+                    id='idea-input'
+                  />
+                  <Button
+                    className='absolute right-0.5 '
+                    onClick={() => console.log('Generate clicked')}
+                  >
+                    ✨ Generate
+                  </Button>
+                </div>
               </div>
+              <TypewriterPlaceholder
+                onTextChange={handlePlaceholderTextChange}
+              />
             </div>
           </div>
         </section>
-        <section className='w-full py-12 md:py-24 lg:py-32  '>
+        <section className='w-full py-12 md:py-24 lg:py-32 '>
           <div className='container px-4 md:px-6'>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
+            <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
               Key Features
             </h2>
             <div className='grid gap-6 lg:grid-cols-3 lg:gap-12'>
               <Card>
                 <CardHeader>
-                  <Users className='h-10 w-10 mb-4' />
+                  <Users className='w-10 h-10 mb-4' />
                   <CardTitle>Creator-Driven Coincases</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -146,7 +169,7 @@ export function LandingPage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <Lock className='h-10 w-10 mb-4' />
+                  <Lock className='w-10 h-10 mb-4' />
                   <CardTitle>Smart Contract-Managed</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -158,7 +181,7 @@ export function LandingPage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <BarChart2 className='h-10 w-10 mb-4' />
+                  <BarChart2 className='w-10 h-10 mb-4' />
                   <CardTitle>Real-Time Performance Tracking</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -172,50 +195,234 @@ export function LandingPage() {
           </div>
         </section>
         <section className='w-full py-18 md:py-24 lg:py-2 rounded-xl'>
-          <div className='container px-4 md:px-6'>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
+          <div className='container flex flex-col gap-6 px-4 md:px-6'>
+            <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
               How It Works
             </h2>
-            <ol className='grid gap-6 lg:grid-cols-3 lg:gap-12'>
-              <li className='flex flex-col items-center text-center'>
-                <div className='relative w-24 h-24 mb-4'>
-                  <Lottie options={defaultOptions} height={96} width={96} />
-                </div>
-                <h3 className='mt-4 text-xl font-semibold '>
-                  Choose a Coincase
-                </h3>
-                <p className='mt-2 text-gray-500  dark:text-gray-400'>
-                  Browse and select from expert-curated crypto portfolios.
-                </p>
-              </li>
-              <li className='flex flex-col items-center text-center'>
-                <div className='relative w-24 h-24 mb-4'>
-                  <Lottie
-                    options={investLottieOptions}
-                    height={96}
-                    width={96}
-                  />
-                </div>
-                <h3 className='mt-4 text-xl font-semibold '>Subscribe</h3>
-                <p className='mt-2 text-gray-500  dark:text-gray-400'>
-                  Invest in your chosen coincase with ease and confidence.
-                </p>
-              </li>
-              <li className='flex flex-col items-center text-center'>
-                <div className='relative w-24 h-24 mb-4'>
-                  <Lottie options={growLottieOptions} height={96} width={96} />
-                </div>
-                <h3 className='mt-4 text-xl font-semibold '>Track & Grow</h3>
-                <p className='mt-2 text-gray-500  dark:text-gray-400'>
-                  Monitor performance and watch your investment grow.
-                </p>
-              </li>
+            <ol className='grid gap-6 lg:grid-cols-5 lg:gap-6'>
+              <div
+                className='relative col-span-3 h-full p-[1px] bg-white/30 rounded-2xl'
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, #7341DC, rgb(255 255 255 / 0.3))`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.3)';
+                }}
+              >
+                <Card className='flex flex-col  h-full   text-left bg-[url("/images/gradient-alt.webp")] bg-cover bg-center'>
+                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
+                    <CardHeader>
+                      <CardTitle className='text-2xl font-semibold text-white'>
+                        Coincases
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-gray-300'>
+                        Coincases are small baskets of crypto assets created by
+                        Experts, You or AI based on an idea or a theme.
+                      </p>
+                    </CardContent>
+                  </div>
+                  <div className='w-full h-full pl-8 ml-auto md:pl-16'>
+                    <img
+                      src='https://uizard.io/static/142f32d612008a9f23afcfce4e0267d2/a2fef/6130ef60bb0b6a414eabe402e1bd1d6968112fd9-622x454.webp'
+                      alt='Choose a Coincase'
+                      className='w-full h-full rounded-br-2xl'
+                    />
+                  </div>
+                </Card>
+              </div>
+              <div
+                className='relative md:col-span-2 col-span-3 p-[1px] bg-white/30 rounded-2xl flex flex-col '
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, #7341DC, rgb(255 255 255 / 0.3))`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.3)';
+                }}
+              >
+                <Card className='flex flex-col h-full text-left'>
+                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
+                    <CardHeader>
+                      <CardTitle className='text-2xl font-semibold text-white'>
+                        Diversify your portfolio
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-left text-gray-300 '>
+                        Achieve a diversified portfolio & tackle the
+                        unpredictability of the crypto market.
+                      </p>
+                    </CardContent>
+                  </div>
+                  <div className='w-full h-full pl-8 ml-auto md:pl-16'>
+                    <img
+                      src='https://uizard.io/static/be38f39ffb48b08064775fa616312142/12ec6/b118cff69342110d2caf4b7ed11d62215510394e-862x648.webp'
+                      alt='Choose a Coincase'
+                      className='w-full h-full pl-12 ml-auto rounded-br-2xl '
+                    />
+                  </div>
+                </Card>
+              </div>
+            </ol>
+
+            <ol className='grid gap-6 lg:grid-cols-5 lg:gap-6'>
+              <div
+                className='relative md:col-span-2 col-span-3 p-[1px] bg-white/30 rounded-2xl flex flex-col '
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, #7341DC, rgb(255 255 255 / 0.3))`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.3)';
+                }}
+              >
+                <Card className='flex flex-col  h-full   text-left bg-[url("/images/gradient-alt.webp")] bg-cover bg-center'>
+                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
+                    <CardHeader>
+                      <CardTitle className='text-2xl font-semibold text-white'>
+                        Make AI work for you
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-gray-300'>
+                        Rebalance your coincase with smart AI recommendations.
+                      </p>
+                    </CardContent>
+                  </div>
+                  <div className='w-full h-full pl-8 ml-auto md:pl-16'>
+                    <img
+                      src='https://uizard.io/static/142f32d612008a9f23afcfce4e0267d2/a2fef/6130ef60bb0b6a414eabe402e1bd1d6968112fd9-622x454.webp'
+                      alt='Choose a Coincase'
+                      className='w-full h-full pl-12 ml-auto rounded-br-2xl '
+                    />
+                  </div>
+                </Card>
+              </div>
+              <div
+                className='relative md:col-span-3 col-span-3 p-[1px] bg-white/30 rounded-2xl flex flex-col '
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, #7341DC, rgb(255 255 255 / 0.3))`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.3)';
+                }}
+              >
+                <Card className='flex flex-col h-full text-left'>
+                  <div className='px-12 pt-8'>
+                    <CardHeader>
+                      <CardTitle className='text-2xl font-semibold text-white'>
+                        Take Data-Driven Decisions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-left text-gray-300 '>
+                        Use the data to Rebalance your coincase.
+                      </p>
+                    </CardContent>
+                  </div>
+                  <div className=''>
+                    <img
+                      src='https://uizard.io/static/be38f39ffb48b08064775fa616312142/12ec6/b118cff69342110d2caf4b7ed11d62215510394e-862x648.webp'
+                      alt='Choose a Coincase'
+                      className='w-full h-full pl-12 ml-auto rounded-br-2xl '
+                    />
+                  </div>
+                </Card>
+              </div>
+            </ol>
+
+            <ol className='grid gap-6 lg:grid-cols-5 lg:gap-6'>
+              <div
+                className='relative col-span-3 h-full p-[1px] bg-white/30 rounded-2xl'
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, #7341DC, rgb(255 255 255 / 0.3))`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.3)';
+                }}
+              >
+                <Card className='flex flex-col  h-full   text-left bg-[url("/images/gradient-alt.webp")] bg-cover bg-center'>
+                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
+                    <CardHeader>
+                      <CardTitle className='text-2xl font-semibold text-white'>
+                        Think you're an expert?
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-gray-300'>
+                        Make your Coincase public and let the community
+                        subscribe to it.
+                      </p>
+                    </CardContent>
+                  </div>
+                  <div className='w-full h-full pl-8 ml-auto md:pl-16'>
+                    <img
+                      src='https://uizard.io/static/142f32d612008a9f23afcfce4e0267d2/a2fef/6130ef60bb0b6a414eabe402e1bd1d6968112fd9-622x454.webp'
+                      alt='Choose a Coincase'
+                      className='w-full h-full rounded-br-2xl'
+                    />
+                  </div>
+                </Card>
+              </div>
+              <div
+                className='relative md:col-span-2 col-span-3 p-[1px] bg-white/30 rounded-2xl flex flex-col '
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, #7341DC, rgb(255 255 255 / 0.3))`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.3)';
+                }}
+              >
+                <Card className='flex flex-col h-full text-left'>
+                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
+                    <CardHeader>
+                      <CardTitle className='text-2xl font-semibold text-white'>
+                        Just started in crypto?{' '}
+                        <span className='text-transparent bg-gradient-to-l from-primary to-white bg-clip-text'>
+                          #WAGMI
+                        </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-left text-gray-300 '>
+                        Subscribe to a public coincase and let the Experts & AI
+                        do the work.
+                      </p>
+                    </CardContent>
+                  </div>
+                  <div className='w-full h-full pl-8 ml-auto md:pl-16'>
+                    <img
+                      src='https://uizard.io/static/be38f39ffb48b08064775fa616312142/12ec6/b118cff69342110d2caf4b7ed11d62215510394e-862x648.webp'
+                      alt='Choose a Coincase'
+                      className='w-full h-full pl-12 ml-auto rounded-br-2xl '
+                    />
+                  </div>
+                </Card>
+              </div>
             </ol>
           </div>
         </section>
-        <section className='w-full py-12 md:py-24 lg:py-32  '>
+        <section className='w-full py-12 md:py-24 lg:py-32 '>
           <div className='container px-4 md:px-6'>
-            <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
+            <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
               What Our Users Say
             </h2>
             <div className='grid gap-6 lg:grid-cols-2 lg:gap-12'>
@@ -262,18 +469,18 @@ export function LandingPage() {
               <div className='space-x-4'>
                 <Button onClick={handleGetStarted}>Get Started Now</Button>
                 <Button variant='outline'>
-                  Learn More <ArrowRight className='ml-2 h-4 w-4' />
+                  Learn More <ArrowRight className='w-4 h-4 ml-2' />
                 </Button>
               </div>
             </div>
           </div>
         </section>
       </main>
-      <footer className='flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t'>
+      <footer className='flex flex-col items-center w-full gap-2 px-4 py-6 border-t sm:flex-row shrink-0 md:px-6'>
         <p className='text-xs text-gray-500 dark:text-gray-400'>
           © 2023 Coincase. All rights reserved.
         </p>
-        <nav className='sm:ml-auto flex gap-4 sm:gap-6 items-center justify-center'>
+        <nav className='flex items-center justify-center gap-4 sm:ml-auto sm:gap-6'>
           <Link className='text-xs hover:underline underline-offset-4' href='#'>
             Terms of Service
           </Link>
@@ -284,27 +491,6 @@ export function LandingPage() {
         </nav>
       </footer>
     </div>
-  );
-}
-
-function CoinIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <circle cx='12' cy='12' r='9' />
-      <path d='M14.8 9A2 2 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1-1.8-1' />
-      <path d='M12 6v2m0 8v2' />
-    </svg>
   );
 }
 

@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { LandingPage } from '@/components/landing-page';
 export default function Home() {
   return (
-    <div className='flex items-center justify-center min-h-screen p-4 bg-background text-foreground'>
+    <div className='bg-[url("/images/gradient.webp")] flex items-center justify-center min-h-screen p-4   text-foreground'>
       <LandingPage />
     </div>
   );
