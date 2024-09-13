@@ -81,19 +81,19 @@ export function LandingPage() {
           } lg:flex absolute top-14 left-0 right-0 bg-background lg:relative lg:top-0 flex-col lg:flex-row ml-auto gap-4 sm:gap-6 p-4 lg:p-0`}
         >
           <Link
-            className='text-sm font-medium hover:underline underline-offset-4 hover:bg-primary/10 p-2 rounded-md transition-colors duration-200'
+            className='text-sm font-medium px-4 hover:bg-primary p-2 rounded-md transition-colors duration-200'
             href='#'
           >
             Features
           </Link>
           <Link
-            className='text-sm font-medium hover:underline underline-offset-4 hover:bg-primary/10 p-2 rounded-md transition-colors duration-200'
+            className='text-sm font-medium px-4 hover:bg-primary p-2 rounded-md transition-colors duration-200'
             href='#'
           >
             How It Works
           </Link>
           <Link
-            className='text-sm font-medium hover:underline underline-offset-4 hover:bg-primary/10 p-2 rounded-md transition-colors duration-200'
+            className='text-sm font-medium px-4 hover:bg-primary p-2 rounded-md transition-colors duration-200'
             href='#'
           >
             Testimonials
