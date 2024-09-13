@@ -16,6 +16,8 @@ import buyLottieAnimation from '../public/lottie/buy-crypto.json';
 import growLottieAnimation from '../public/lottie/crypto-investment.json';
 import investLottieAnimation from '../public/lottie/supply-assets.json';
 import { useRouter } from 'next/navigation';
+import ToggleTheme from './ToggleTheme';
+import 'animate.css';
 
 export function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -98,19 +100,25 @@ export function LandingPage() {
           </Link>
         </nav>
       </header>
-      <main className=' '>
+      <main className='flex-grow'>
         <section className='w-full py-12 md:py-24 lg:py-32 xl:py-48'>
           <div className='container px-4 md:px-6'>
             <div className='flex flex-col items-center space-y-4 text-center'>
               <div className='space-y-2'>
-                <h1 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none'>
+                <h1 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none animate__animated animate__fadeInUp   '>
                   Invest using AI with Coincase
                 </h1>
-                <p className='mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400'>
+                <p
+                  className='mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400 animate__animated animate__fadeInUp '
+                  style={{ animationDelay: '0.5s' }}
+                >
                   Idea based crypto portfolios made by Experts & AI.
                 </p>
               </div>
-              <div className='space-x-4'>
+              <div
+                className='space-x-4 animate__animated animate__fadeInUp'
+                style={{ animationDelay: '1s' }}
+              >
                 <Button onClick={handleGetStarted}>Get Started</Button>
                 <Button variant='outline'>Learn More</Button>
               </div>
@@ -264,13 +272,14 @@ export function LandingPage() {
         <p className='text-xs text-gray-500 dark:text-gray-400'>
           © 2023 Coincase. All rights reserved.
         </p>
-        <nav className='sm:ml-auto flex gap-4 sm:gap-6'>
+        <nav className='sm:ml-auto flex gap-4 sm:gap-6 items-center justify-center'>
           <Link className='text-xs hover:underline underline-offset-4' href='#'>
             Terms of Service
           </Link>
           <Link className='text-xs hover:underline underline-offset-4' href='#'>
             Privacy
           </Link>
+          <ToggleTheme />
         </nav>
       </footer>
     </div>
