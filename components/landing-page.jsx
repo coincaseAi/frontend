@@ -320,7 +320,7 @@ export function LandingPage() {
                 }}
               >
                 <Card className='flex flex-col h-full text-left'>
-                  <div className='px-12 pt-8'>
+                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
                     <CardHeader>
                       <CardTitle className='text-2xl font-semibold text-white'>
                         Take Data-Driven Decisions
@@ -365,8 +365,7 @@ export function LandingPage() {
                     </CardHeader>
                     <CardContent>
                       <p className='text-gray-300'>
-                        Make your Coincase public and let the community
-                        subscribe to it.
+                        Make your Coincase public and earn subscription fees.
                       </p>
                     </CardContent>
                   </div>
