@@ -57,7 +57,7 @@ export function LandingPage() {
   };
 
   const handleGetStarted = () => {
-    router.push('/home');
+    router.push('/home/discover');
   };
 
   const handlePlaceholderTextChange = (text) => {
@@ -66,7 +66,7 @@ export function LandingPage() {
 
   return (
     <div className='flex flex-col min-h-screen'>
-      <header className='flex items-center w-full h-20 px-4 mx-auto border lg:px-6 border-primary/30 backdrop-blur-lg rounded-3xl'>
+      <Card className='flex items-center w-full h-20 px-4 mx-auto mt-8 border lg:px-6 border-primary/30 backdrop-blur-lg rounded-3xl'>
         <Link className='flex items-center justify-center' href='#'>
           <div className='text-2xl font-bold text-primary'>Coincase</div>
         </Link>
@@ -84,36 +84,36 @@ export function LandingPage() {
         <nav
           className={`${
             isMenuOpen ? 'flex' : 'hidden'
-          } lg:flex absolute top-14 left-0 right-0 bg-background lg:relative lg:top-0 flex-col lg:flex-row ml-auto gap-4 sm:gap-6 p-4 lg:p-0`}
+          } lg:flex absolute top-20 left-0 right-0    lg:relative lg:top-0 flex-col lg:flex-row ml-auto gap-4 sm:gap-6 p-4 lg:p-0 z-50`}
         >
-          <div className='flex justify-center flex-grow mx-auto'>
+          <div className='flex flex-col items-center justify-center flex-grow mx-auto lg:flex-row lg:items-start'>
             <Link
-              className='p-2 px-4 font-medium transition-colors duration-200 rounded-md hover:bg-primary'
+              className='w-full p-2 px-4 font-medium text-center duration-200 rounded-md cursor-pointer text-white/50 hover:text-white lg:w-auto'
               href='#'
             >
               Features
             </Link>
             <Link
-              className='p-2 px-4 font-medium transition-colors duration-200 rounded-md hover:bg-primary'
+              className='w-full p-2 px-4 font-medium text-center duration-200 rounded-md cursor-pointer text-white/50 hover:text-white lg:w-auto'
               href='#'
             >
               How It Works
             </Link>
             <Link
-              className='p-2 px-4 font-medium transition-colors duration-200 rounded-md hover:bg-primary'
-              href='#'
+              className='w-full p-2 px-4 font-medium text-center duration-200 rounded-md cursor-pointer text-white/50 hover:text-white lg:w-auto'
+              href='/whitepaper'
             >
-              Testimonials
+              Whitepaper
             </Link>
           </div>
           <Link
-            className='inline-flex items-center justify-center p-2 px-4 font-medium text-white transition-colors duration-200 rounded-md bg-primary hover:bg-primary/90'
+            className='inline-flex items-center justify-center w-full p-2 px-4 font-medium text-white duration-200 rounded-md cursor-pointer bg-primary hover:bg-primary/90 lg:w-auto'
             href='/home/discover'
           >
             Launch App
           </Link>
         </nav>
-      </header>
+      </Card>
       <main className='flex-grow '>
         <section className='flex items-center w-full min-h-screen py-12 bg-center bg-cover md:py-24 lg:py-32 xl:py-48'>
           <div className='container px-4 md:px-6 '>
@@ -156,51 +156,7 @@ export function LandingPage() {
             </div>
           </div>
         </section>
-        <section className='w-full py-12 md:py-24 lg:py-32 '>
-          <div className='container px-4 md:px-6'>
-            <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
-              Key Features
-            </h2>
-            <div className='grid gap-6 lg:grid-cols-3 lg:gap-12'>
-              <Card>
-                <CardHeader>
-                  <Users className='w-10 h-10 mb-4' />
-                  <CardTitle>Creator-Driven Coincases</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Experts create and manage portfolios based on their
-                    knowledge and market insights.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <Lock className='w-10 h-10 mb-4' />
-                  <CardTitle>Smart Contract-Managed</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Transparent and secure portfolios deployed on the blockchain
-                    with auto-rebalancing.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <BarChart2 className='w-10 h-10 mb-4' />
-                  <CardTitle>Real-Time Performance Tracking</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Monitor your investments in real-time for informed
-                    decision-making.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
+
         <section className='w-full py-18 md:py-24 lg:py-2 rounded-xl'>
           <div className='container flex flex-col gap-6 px-4 md:px-6'>
             <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
@@ -229,7 +185,7 @@ export function LandingPage() {
                   />
                 </div>
               </Card>
-              <Card className='flex flex-col h-full col-span-2 text-left'>
+              <Card className='flex flex-col h-full col-span-3 text-left md:col-span-2'>
                 <div className='px-6 pt-4 md:px-12 md:pt-8'>
                   <CardHeader>
                     <CardTitle className='text-2xl font-semibold text-white'>
@@ -254,7 +210,7 @@ export function LandingPage() {
             </ol>
 
             <ol className='grid gap-6 lg:grid-cols-5 lg:gap-6'>
-              <Card className='flex flex-col h-full col-span-2 text-left bg-center bg-cover'>
+              <Card className='flex flex-col h-full col-span-3 text-left bg-center bg-cover md:col-span-2'>
                 <div className='px-6 pt-4 md:px-12 md:pt-8'>
                   <CardHeader>
                     <CardTitle className='text-2xl font-semibold text-white'>
@@ -322,7 +278,7 @@ export function LandingPage() {
                 </div>
               </Card>
 
-              <Card className='flex flex-col h-full col-span-2 text-left'>
+              <Card className='flex flex-col h-full col-span-3 text-left md:col-span-2'>
                 <div className='px-6 pt-4 md:px-12 md:pt-8'>
                   <CardHeader>
                     <CardTitle className='text-2xl font-semibold text-white'>
@@ -350,40 +306,278 @@ export function LandingPage() {
             </ol>
           </div>
         </section>
+
         <section className='w-full py-12 md:py-24 lg:py-32 '>
-          <div className='container px-4 md:px-6'>
+          <div className='container flex flex-col gap-6 px-4 md:px-6'>
             <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
-              What Our Users Say
+              Key Features
             </h2>
-            <div className='grid gap-6 lg:grid-cols-2 lg:gap-12'>
+            <div className='grid gap-6 lg:grid-cols-3 lg:gap-12'>
               <Card>
                 <CardHeader>
-                  <CardTitle>John Doe</CardTitle>
-                  <CardDescription>Crypto Enthusiast</CardDescription>
+                  <Users className='w-10 h-10 mb-4' />
+                  <CardTitle>Secure Liquidity Pool Integration</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    "Coincase has simplified my crypto investment journey. The
-                    expert-curated portfolios give me confidence in my
-                    investments."
+                  <p className='text-gray-300'>
+                    Coincase integrates with Uniswap to ensure seamless token
+                    liquidity. Every transaction fee contributes to the
+                    liquidity pool of the native CASE token, enhancing token
+                    stability and ensuring smooth trading on decentralized
+                    exchanges.
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Jane Smith</CardTitle>
-                  <CardDescription>New Investor</CardDescription>
+                  <Lock className='w-10 h-10 mb-4' />
+                  <CardTitle>Decentralized Smart Contract Management</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    "As a beginner, Coincase has been a game-changer. It's like
-                    having a crypto expert guiding my investments!"
+                  <p className='text-gray-300'>
+                    Coincase operates on decentralized, self-executing smart
+                    contracts deployed on the Ethereum blockchain, ensuring
+                    secure, transparent, and tamper-proof portfolio management
+                    for both creators and subscribers.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <BarChart2 className='w-10 h-10 mb-4' />
+                  <CardTitle>
+                    AI-Powered Crypto Portfolio Recommendations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-gray-300'>
+                    Leverage advanced AI algorithms to deliver personalized
+                    crypto portfolio recommendations based on market trends,
+                    risk profiles, and investment goals. Coincase AI helps users
+                    make smarter, data-driven investment decisions.
                   </p>
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
+
+        <section className='w-full py-12 md:py-24 lg:py-32 '>
+          <div className='container px-4 md:px-6'>
+            <h2 className='mb-12 text-3xl font-bold tracking-tighter text-center sm:text-5xl'>
+              CASE Tokenomics
+            </h2>
+            <div className='grid gap-6 lg:grid-cols-2'>
+              <Card className='col-span-2 lg:col-span-1'>
+                <CardHeader>
+                  <CardTitle>Token Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='mb-4 text-lg font-semibold'>
+                    Total Supply: 100,000,000 CASE tokens
+                  </p>
+                  <div className='mb-4'>
+                    <div className='w-full h-6 overflow-hidden bg-gray-200 rounded-full dark:bg-gray-700'>
+                      <div
+                        className='h-6 bg-blue-600'
+                        style={{ width: '7%' }}
+                      ></div>
+                      <div
+                        className='h-6 bg-green-600'
+                        style={{
+                          width: '10%',
+                          marginTop: '-24px',
+                          marginLeft: '7%',
+                        }}
+                      ></div>
+                      <div
+                        className='h-6 bg-yellow-600'
+                        style={{
+                          width: '20%',
+                          marginTop: '-24px',
+                          marginLeft: '17%',
+                        }}
+                      ></div>
+                      <div
+                        className='h-6 bg-red-600'
+                        style={{
+                          width: '25%',
+                          marginTop: '-24px',
+                          marginLeft: '37%',
+                        }}
+                      ></div>
+                      <div
+                        className='h-6 bg-purple-600'
+                        style={{
+                          width: '20%',
+                          marginTop: '-24px',
+                          marginLeft: '62%',
+                        }}
+                      ></div>
+                      <div
+                        className='h-6 bg-indigo-600'
+                        style={{
+                          width: '8%',
+                          marginTop: '-24px',
+                          marginLeft: '82%',
+                        }}
+                      ></div>
+                      <div
+                        className='h-6 bg-pink-600'
+                        style={{
+                          width: '5%',
+                          marginTop: '-24px',
+                          marginLeft: '90%',
+                        }}
+                      ></div>
+                      <div
+                        className='h-6 bg-teal-600'
+                        style={{
+                          width: '5%',
+                          marginTop: '-24px',
+                          marginLeft: '95%',
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className='grid grid-cols-2 gap-2'>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-blue-600 rounded-full'></div>
+                      <span>Pre-Seed Investors: 7%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-green-600 rounded-full'></div>
+                      <span>Seed Round: 10%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-yellow-600 rounded-full'></div>
+                      <span>Team & Founders: 20%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-red-600 rounded-full'></div>
+                      <span>Liquidity Pool: 25%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-purple-600 rounded-full'></div>
+                      <span>Community Rewards: 20%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-indigo-600 rounded-full'></div>
+                      <span>Marketing & Growth: 8%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-pink-600 rounded-full'></div>
+                      <span>Advisors: 5%</span>
+                    </div>
+                    <div className='flex items-center'>
+                      <div className='w-3 h-3 mr-2 bg-teal-600 rounded-full'></div>
+                      <span>Reserve Fund: 5%</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className='col-span-2 lg:col-span-1'>
+                <CardHeader>
+                  <CardTitle>Tokenomics Overview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-gray-300'>
+                    The CASE token is designed with a balanced distribution to
+                    ensure long-term sustainability and growth. With a
+                    significant portion allocated to the liquidity pool and
+                    community rewards, we aim to foster a strong and engaged
+                    ecosystem. The allocation for team and founders is vested to
+                    align long-term interests, while the reserve fund provides
+                    flexibility for future developments.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+            <div className='grid gap-6 mt-12 lg:grid-cols-2 '>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Uniswap Liquidity Pool Integration</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='mb-4 text-gray-300'>
+                    Coincase seamlessly integrates with Uniswap to provide a
+                    robust liquidity pool for the CASE token, ensuring smooth
+                    and efficient trading for users.
+                  </p>
+                  <ul className='text-gray-300 list-disc list-inside'>
+                    <li>
+                      Contribute to the liquidity pool and earn fees from every
+                      transaction on the platform
+                    </li>
+                    <li>
+                      Benefit from increased token stability and reduced
+                      slippage
+                    </li>
+                    <li>Participate in the growth of the Coincase ecosystem</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Platform Fees Enhance Liquidity</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='mb-4 text-gray-300'>
+                    Every transaction on Coincase contributes to the strength
+                    and stability of the CASE token ecosystem:
+                  </p>
+                  <ul className='text-gray-300 list-disc list-inside'>
+                    <li>
+                      Fees from Investments, withdrawals, and creator fees add
+                      liquidity to the CASE token pool
+                    </li>
+                    <li>
+                      Continuous liquidity growth increases token stability over
+                      time
+                    </li>
+                    <li>
+                      Users benefit from a more robust and resilient token
+                      economy
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+            <div className='mt-12'>
+              <h2 className='mb-6 text-3xl font-bold tracking-tighter text-center sm:text-4xl'>
+                CASE Token Holders
+              </h2>
+              <div className='grid gap-6 lg:grid-cols-2'>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Earn Through Staking</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className='text-gray-300'>
+                      Stake your CASE tokens and earn additional rewards. This
+                      encourages long-term holding and active participation in
+                      the Coincase ecosystem.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Creator Rewards</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className='text-gray-300'>
+                      Creators of high-performing smallcases can earn additional
+                      CASE tokens, incentivizing excellent portfolio management
+                      and benefiting the entire ecosystem.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className='w-full py-12 md:py-24 lg:py-32'>
           <div className='container px-4 md:px-6'>
             <div className='flex flex-col items-center space-y-4 text-center'>
@@ -398,8 +592,11 @@ export function LandingPage() {
               </div>
               <div className='space-x-4'>
                 <Button onClick={handleGetStarted}>Get Started Now</Button>
-                <Button variant='outline'>
-                  Learn More <ArrowRight className='w-4 h-4 ml-2' />
+                <Button
+                  variant='outline'
+                  onClick={() => router.push('/whitepaper')}
+                >
+                  Read Whitepaper <ArrowRight className='w-4 h-4 ml-2' />
                 </Button>
               </div>
             </div>
@@ -408,7 +605,7 @@ export function LandingPage() {
       </main>
       <footer className='flex flex-col items-center w-full gap-2 px-4 py-6 border-t sm:flex-row shrink-0 md:px-6'>
         <p className='text-xs text-gray-500 dark:text-gray-400'>
-          © 2023 Coincase. All rights reserved.
+          © 2024 Coincase.ai All rights reserved.
         </p>
         <nav className='flex items-center justify-center gap-4 sm:ml-auto sm:gap-6'>
           <Link className='text-xs hover:underline underline-offset-4' href='#'>
@@ -417,7 +614,7 @@ export function LandingPage() {
           <Link className='text-xs hover:underline underline-offset-4' href='#'>
             Privacy
           </Link>
-          <ToggleTheme />
+          {/* <ToggleTheme /> */}
         </nav>
       </footer>
     </div>
