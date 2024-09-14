@@ -17,11 +17,11 @@ export default function WatchlistPage() {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-4">Your Watchlist</h1>
+            <h1 className="mb-4 text-2xl font-bold">Your Watchlist</h1>
             {watchlistedCases.length === 0 ? (
                 <p>You haven't added any cases to your watchlist yet.</p>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                     {watchlistedCases.map((caseData) => (
                         <CaseCard
                             key={caseData.id}

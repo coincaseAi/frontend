@@ -39,15 +39,16 @@ export default function SubscribeDrawer({ caseData, onSubscribe }) {
             </DrawerTrigger>
             <DrawerContent className="max-w-md mx-auto">
                 <DrawerHeader>
-                    <DrawerTitle>
-                        <span className="mr-2 text-muted-foreground">
+                    <DrawerTitle className='flex flex-col items-start justify-center text-2xl font-bold'>
+                        <span className="text-base text-muted">
                             Subscribing to
                         </span>
                         {caseData.name}
+                        <span className="text-sm font-medium text-muted-foreground">
+                            Choose a subscription plan and confirm your subscription.
+                        </span>
                     </DrawerTitle>
-                    <DrawerDescription>
-                        Choose a subscription plan and confirm your subscription.
-                    </DrawerDescription>
+
                 </DrawerHeader>
                 <div className="p-4 space-y-4">
                     <div className='grid grid-cols-2 gap-1'>
@@ -70,7 +71,7 @@ export default function SubscribeDrawer({ caseData, onSubscribe }) {
                             <Label
                                 key={plan.duration}
                                 htmlFor={`plan-${plan.duration}`}
-                                className={`flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all ${selectedPlan.duration === plan.duration
+                                className={`flex flex-col items-center justify-center gap-2 p-4 border rounded-lg cursor-pointer transition-all ${selectedPlan.duration === plan.duration
                                     ? 'border-green-500 bg-green-500/10'
                                     : 'border-muted hover:border-primary/50'
                                     }`}
@@ -82,18 +83,18 @@ export default function SubscribeDrawer({ caseData, onSubscribe }) {
                                 />
                                 <span className="font-semibold ">{plan.label}</span>
                                 {plan.discount > 0 && (
-                                    <span className="text-xs text-green-600">({plan.discount}% off)</span>
+                                    <span className="text-xs text-green-600">{plan.discount}% off</span>
                                 )}
 
                             </Label>
                         ))}
                     </RadioGroup>
-                    <div className='flex flex-col gap-1 mt-4'>
+                    <div className='flex flex-col gap-2 mt-4'>
                         <div className="flex items-center justify-between gap-1 ">
-                            <p className="flex gap-2 text-lg font-semibold text-muted-foreground">Total Amount </p>
-                            <span className="text-xl font-bold text-primary">${calculateTotalAmount()}</span>
+                            <p className="flex gap-2 text-lg font-semibold ">Total Amount </p>
+                            <span className="text-xl font-bold text-green-500">${calculateTotalAmount()}</span>
                         </div>
-                        <p className="text-sm text-muted-foreground">You will be charged <span className="font-semibold text-primary">${caseData.subscriptionFee}</span> every <span className="font-semibold text-primary">{selectedPlan.duration} months</span></p>
+                        <p className="text-xs text-muted-foreground">You will be charged <span className="font-semibold text-green-500">${caseData.subscriptionFee}</span> every <span className="font-semibold text-green-500">{selectedPlan.duration} months</span></p>
                     </div>
                 </div>
                 <DrawerFooter>

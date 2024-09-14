@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,7 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Trash, X } from 'lucide-react';
-import { availableTokens, colors } from '@/constants/mockData';
+import { availableTokens } from '@/constants/tokens';
+import { colors } from '@/constants/mockData';
 import {
   Select,
   SelectContent,
@@ -21,11 +22,9 @@ import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
 
 const steps = [
   { title: 'Basic Information', fields: ['name', 'description'] },
@@ -43,13 +42,14 @@ const steps = [
   { title: 'Review', fields: [] },
 ];
 
-export default function CreateCase() {
+export default function CreateCase({ onClose }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     assets: [],
     minimumInvestment: '',
+    isPublic: false,
     feeType: 'free',
     subscriptionFee1Month: '',
     subscriptionFee6Months: '',
@@ -60,11 +60,10 @@ export default function CreateCase() {
   const [selectedWeight, setSelectedWeight] = useState(0);
   const [remainingWeight, setRemainingWeight] = useState(100);
 
-  const filteredTokens = availableTokens.filter(
-    (token) =>
-      token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredTokens = useMemo(() => availableTokens.filter(token =>
+    token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  ), [searchTerm]);
 
   useEffect(() => {
     const totalWeight = formData.assets.reduce(
@@ -74,22 +73,22 @@ export default function CreateCase() {
     setRemainingWeight(100 - totalWeight);
   }, [formData.assets]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
+  }, [formData]);
 
-  const handleFeeTypeChange = (value) => {
+  const handleFeeTypeChange = useCallback((value) => {
     setFormData({ ...formData, feeType: value });
-  };
+  }, [formData]);
 
-  const handleTokenSelect = (tokenId) => {
-    const token = availableTokens.find((t) => t.id === tokenId);
+  const handleTokenSelect = useCallback((tokenAddress) => {
+    const token = availableTokens.find(t => t.address === tokenAddress);
     setSelectedToken(token);
     setSelectedWeight(0);
-  };
+  }, []);
 
-  const handleAddAsset = () => {
+  const handleAddAsset = useCallback(() => {
     if (selectedToken && selectedWeight > 0) {
       setFormData((prevData) => {
         const existingAssetIndex = prevData.assets.findIndex(
@@ -115,31 +114,32 @@ export default function CreateCase() {
       setSelectedToken(null);
       setSelectedWeight(0);
     }
-  };
+  }, [formData, selectedToken, selectedWeight]);
 
-  const removeAsset = (index) => {
+  const removeAsset = useCallback((index) => {
     const newAssets = formData.assets.filter((_, i) => i !== index);
     setFormData({ ...formData, assets: newAssets });
-  };
+  }, [formData]);
 
-  const nextStep = () => {
+  const nextStep = useCallback(() => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
-  };
+  }, [currentStep]);
 
-  const prevStep = () => {
+  const prevStep = useCallback(() => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
-  };
+  }, [currentStep]);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     console.log(formData);
     toast.success('Case created successfully!');
-  };
+    onClose && onClose();
+  }, [formData, onClose]);
 
-  const isStepValid = () => {
+  const isStepValid = useCallback(() => {
     switch (currentStep) {
       case 0:
         return (
@@ -162,9 +162,13 @@ export default function CreateCase() {
       default:
         return false;
     }
+  }, [formData, currentStep, remainingWeight]);
+
+  const handleSwitchChange = (checked) => {
+    setFormData({ ...formData, isPublic: checked, feeType: 'free' });
   };
 
-  const renderStepContent = (step) => {
+  const renderStepContent = useCallback((step) => {
     switch (step) {
       case 0:
         return (
@@ -195,7 +199,12 @@ export default function CreateCase() {
         return (
           <>
             <div>
-              <h3 className='mb-2 text-lg font-semibold'>Added Assets</h3>
+              <div className='flex items-center justify-between'>
+                <h3 className='text-sm font-semibold '>Assets</h3>
+                <span className='font-mono text-xs text-muted-foreground'>
+                  {100 - remainingWeight}% / 100%
+                </span>
+              </div>
               <div className='flex w-full h-6 mb-2 overflow-hidden rounded-md'>
                 {formData.assets.map((asset, index) => (
                   <div
@@ -213,7 +222,7 @@ export default function CreateCase() {
                   className='h-full bg-muted-foreground '
                 ></div>
               </div>
-              <div className='grid grid-cols-1 gap-1 md:grid-cols-2'>
+              <div className='grid grid-cols-1 gap-1 '>
                 {formData.assets.map((asset, index) => {
                   const token = availableTokens.find(
                     (t) => t.symbol === asset.currency
@@ -231,44 +240,44 @@ export default function CreateCase() {
                             backgroundColor: colors[index % colors.length],
                           }}
                         ></div>
-                        <Avatar className='w-6 h-6'>
+                        <Avatar className='w-6 h-6 bg-white'>
                           <AvatarImage
-                            src={token?.image}
+                            src={token?.logoURI}
                             alt={asset.currency}
                           />
                           <AvatarFallback>
                             {asset.currency.slice(0, 2)}
                           </AvatarFallback>
                         </Avatar>
-                        {asset.weightage}% {asset.currency}
+                        {asset.currency}
                       </div>
-                      <Button
-                        onClick={() => removeAsset(index)}
-                        variant='ghost'
-                        className='rounded-full'
-                        size='sm'
-                      >
-                        <Trash className='w-4 h-4 text-red-500' />
-                      </Button>
+                      <div className='flex items-center gap-1 font-mono'>
+                        {asset.weightage}%
+
+                        <Button
+                          onClick={() => removeAsset(index)}
+                          variant='ghost'
+                          className='rounded-full'
+                          size='sm'
+                        >
+                          <Trash className='w-4 h-4 text-red-500' />
+                        </Button>
+                      </div>
                     </Badge>
                   );
                 })}
-                {remainingWeight > 0 && (
-                  <Badge
-                    variant='outline'
-                    className='flex items-center gap-1 p-1 text-sm rounded-full'
-                  >
-                    <div className='w-6 h-6 ml-1 rounded-full bg-muted-foreground'></div>
-                    <div className='flex items-center gap-1 mr-2'>
-                      {' '}
-                      {remainingWeight}% Remaining weight
-                    </div>
-                  </Badge>
-                )}
+
               </div>
             </div>
             {remainingWeight > 0 && (
-              <div className='flex flex-col w-full gap-4 p-3 border rounded-lg'>
+              <div className='flex flex-col w-full gap-4 pt-8 '>
+                <div className='flex items-center justify-center gap-2 -mt-6 text-muted-foreground'>
+                  <div className='flex-grow h-0.5 rounded-full bg-muted'>
+                  </div>
+                  <Label>Add Token</Label>
+                  <div className='flex-grow h-0.5 rounded-full bg-muted'>
+                  </div>
+                </div>
                 <Select onValueChange={handleTokenSelect}>
                   <SelectTrigger className='w-full'>
                     <SelectValue placeholder='Select a token' />
@@ -282,32 +291,42 @@ export default function CreateCase() {
                     />
                     <div className='max-h-[200px] overflow-y-auto'>
                       {filteredTokens.map((token) => (
-                        <SelectItem key={token.id} value={token.id}>
-                          {token.name} ({token.symbol})
+                        <SelectItem key={token.address} value={token.address}>
+                          <div className='flex items-center gap-1'>
+                            <Avatar className='w-4 h-4 bg-white'>
+                              <AvatarImage src={token?.logoURI} alt={token.name} />
+                              <AvatarFallback>
+                                {token.symbol.slice(0, 2)}
+                              </AvatarFallback>
+                            </Avatar>
+                            {token.name} ({token.symbol})
+                          </div>
                         </SelectItem>
                       ))}
                     </div>
                   </SelectContent>
                 </Select>
 
-                <div className='grid w-full  items-center gap-1.5'>
-                  <div className='flex items-center mb-4 space-x-2'>
-                    <Label>Weight </Label>{' '}
-                    <Slider
-                      value={[selectedWeight]}
-                      onValueChange={(value) => setSelectedWeight(value[0])}
-                      max={remainingWeight}
-                      step={1}
-                    />
-                    <span>{selectedWeight}%</span>
+                {selectedToken && (
+                  <div className='grid w-full items-center gap-1.5'>
+                    <div className='flex items-center gap-2 p-2 mb-4 border rounded-md border-muted'>
+                      <Label className='text-sm'>Weight </Label>{' '}
+                      <Slider
+                        value={[selectedWeight]}
+                        onValueChange={(value) => setSelectedWeight(value[0])}
+                        max={remainingWeight}
+                        step={1}
+                      />
+                      <span className='font-mono text-sm'>{selectedWeight}%</span>
+                    </div>
+                    <Button
+                      onClick={handleAddAsset}
+                      disabled={selectedWeight === 0}
+                    >
+                      Add Token
+                    </Button>
                   </div>
-                  <Button
-                    onClick={handleAddAsset}
-                    disabled={selectedWeight === 0 || selectedToken === null}
-                  >
-                    Add Token
-                  </Button>
-                </div>
+                )}
               </div>
             )}
           </>
@@ -326,83 +345,94 @@ export default function CreateCase() {
                 type='number'
               />
             </div>
-            <div className='grid w-full items-center gap-1.5'>
-              <Label>Fee Type</Label>
-              <RadioGroup
-                value={formData.feeType}
-                onValueChange={handleFeeTypeChange}
-                className='grid grid-cols-2 gap-4'
-              >
-                <Card
-                  className={`cursor-pointer ${
-                    formData.feeType === 'free' ? 'border-primary' : ''
-                  }`}
-                  onClick={() => handleFeeTypeChange('free')}
-                >
-                  <CardContent className='flex items-center justify-between p-4'>
-                    <div className='flex items-center space-x-2'>
-                      <RadioGroupItem value='free' id='free' />
-                      <Label htmlFor='free'>Free</Label>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card
-                  className={`cursor-pointer ${
-                    formData.feeType === 'subscription' ? 'border-primary' : ''
-                  }`}
-                  onClick={() => handleFeeTypeChange('subscription')}
-                >
-                  <CardContent className='flex items-center justify-between p-4'>
-                    <div className='flex items-center space-x-2'>
-                      <RadioGroupItem value='subscription' id='subscription' />
-                      <Label htmlFor='subscription'>Subscription</Label>
-                    </div>
-                  </CardContent>
-                </Card>
-              </RadioGroup>
+            <div className='flex items-center justify-between'>
+              <Label htmlFor='isPublic'>Make case public</Label>
+              <Switch
+                id='isPublic'
+                checked={formData.isPublic}
+                onCheckedChange={handleSwitchChange}
+              />
             </div>
-            {formData.feeType === 'subscription' && (
-              <div className='grid grid-cols-3 gap-2'>
+
+            {formData.isPublic && (
+              <>
                 <div className='grid w-full items-center gap-1.5'>
-                  <Label htmlFor='subscriptionFee1Month'>1 Month Fee</Label>
-                  <Input
-                    id='subscriptionFee1Month'
-                    name='subscriptionFee1Month'
-                    value={formData.subscriptionFee1Month}
-                    onChange={handleInputChange}
-                    placeholder='1 month fee'
-                    type='number'
-                  />
+                  <Label>Subscription Type</Label>
+                  <RadioGroup
+                    value={formData.feeType}
+                    onValueChange={handleFeeTypeChange}
+                    className='grid grid-cols-2 gap-4'
+                  >
+                    <Card
+                      className={`cursor-pointer ${formData.feeType === 'free' ? 'border-primary' : ''
+                        }`}
+                      onClick={() => handleFeeTypeChange('free')}
+                    >
+                      <CardContent className='flex items-center justify-between p-4'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='free' id='free' />
+                          <Label htmlFor='free'>Free</Label>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card
+                      className={`cursor-pointer ${formData.feeType === 'subscription' ? 'border-primary' : ''
+                        }`}
+                      onClick={() => handleFeeTypeChange('subscription')}
+                    >
+                      <CardContent className='flex items-center justify-between p-4'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='subscription' id='subscription' />
+                          <Label htmlFor='subscription'>Subscription</Label>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </RadioGroup>
                 </div>
-                <div className='grid w-full items-center gap-1.5'>
-                  <Label htmlFor='subscriptionFee6Months'>6 Months Fee</Label>
-                  <Input
-                    id='subscriptionFee6Months'
-                    name='subscriptionFee6Months'
-                    value={formData.subscriptionFee6Months}
-                    onChange={handleInputChange}
-                    placeholder='6 months fee'
-                    type='number'
-                  />
-                </div>
-                <div className='grid w-full items-center gap-1.5'>
-                  <Label htmlFor='subscriptionFee12Months'>12 Months Fee</Label>
-                  <Input
-                    id='subscriptionFee12Months'
-                    name='subscriptionFee12Months'
-                    value={formData.subscriptionFee12Months}
-                    onChange={handleInputChange}
-                    placeholder='12 months fee'
-                    type='number'
-                  />
-                </div>
-              </div>
+                {formData.feeType === 'subscription' && (
+                  <div className='grid grid-cols-3 gap-2'>
+                    <div className='grid w-full items-center gap-1.5'>
+                      <Label htmlFor='subscriptionFee1Month'>1 Month Fee</Label>
+                      <Input
+                        id='subscriptionFee1Month'
+                        name='subscriptionFee1Month'
+                        value={formData.subscriptionFee1Month}
+                        onChange={handleInputChange}
+                        placeholder='1 month fee'
+                        type='number'
+                      />
+                    </div>
+                    <div className='grid w-full items-center gap-1.5'>
+                      <Label htmlFor='subscriptionFee6Months'>6 Months Fee</Label>
+                      <Input
+                        id='subscriptionFee6Months'
+                        name='subscriptionFee6Months'
+                        value={formData.subscriptionFee6Months}
+                        onChange={handleInputChange}
+                        placeholder='6 months fee'
+                        type='number'
+                      />
+                    </div>
+                    <div className='grid w-full items-center gap-1.5'>
+                      <Label htmlFor='subscriptionFee12Months'>12 Months Fee</Label>
+                      <Input
+                        id='subscriptionFee12Months'
+                        name='subscriptionFee12Months'
+                        value={formData.subscriptionFee12Months}
+                        onChange={handleInputChange}
+                        placeholder='12 months fee'
+                        type='number'
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </>
         );
       case 3:
         return (
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-4'>
             <h3 className='text-lg font-semibold'>{formData.name}</h3>
             <p className='text-sm text-muted-foreground'>
               {formData.description}
@@ -419,8 +449,8 @@ export default function CreateCase() {
                     variant='outline'
                     className='flex items-center gap-1 p-1 text-sm'
                   >
-                    <Avatar className='w-4 h-4'>
-                      <AvatarImage src={token?.image} alt={asset.currency} />
+                    <Avatar className='w-4 h-4 bg-white'>
+                      <AvatarImage src={token?.logoURI} alt={asset.currency} />
                       <AvatarFallback>
                         {asset.currency.slice(0, 2)}
                       </AvatarFallback>
@@ -440,48 +470,19 @@ export default function CreateCase() {
                 </Label>
                 <div>{formData.minimumInvestment}</div>
               </div>
-              <div className='px-2 pb-1 rounded-md bg-muted'>
-                <Label className='text-xs font-medium text-muted-foreground'>
-                  Fee Type
-                </Label>
-                <div>
-                  {formData.feeType === 'free' ? 'Free' : 'Subscription'}
-                </div>
-              </div>
             </div>
 
-            {formData.feeType === 'subscription' && (
-              <div className='grid grid-cols-3 gap-1'>
-                <div className='flex flex-col gap-1 p-1 px-3 border rounded-md border-muted'>
-                  <Label className='text-xs font-semibold text-muted-foreground'>
-                    1 Month{' '}
-                  </Label>
-                  <p>{formData.subscriptionFee1Month}</p>
-                </div>
-                <div className='flex flex-col gap-1 p-1 px-3 border rounded-md border-muted'>
-                  <Label className='text-xs font-semibold text-muted-foreground'>
-                    6 Months{' '}
-                  </Label>
-                  <p>{formData.subscriptionFee6Months}</p>
-                </div>
-                <div className='flex flex-col gap-1 p-1 px-3 border rounded-md border-muted'>
-                  <Label className='text-xs font-semibold text-muted-foreground'>
-                    12 Months{' '}
-                  </Label>
-                  <p>{formData.subscriptionFee12Months}</p>
-                </div>
-              </div>
-            )}
+
           </div>
         );
       default:
         return null;
     }
-  };
+  }, [formData, currentStep, searchTerm, filteredTokens, selectedToken, selectedWeight, remainingWeight, handleTokenSelect, handleAddAsset]);
 
   return (
-    <div className='container max-w-md p-4 mx-auto'>
-      <div className='mb-6'>
+    <div className='flex flex-col h-full max-w-md p-4 mx-auto '>
+      <div className='flex-grow mb-6'>
         <div className='flex mb-4 items-center gap-0.5 overflow-hidden '>
           <span className='text-xs text-muted-foreground'>
             {currentStep + 1}/{steps.length}
@@ -489,9 +490,8 @@ export default function CreateCase() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className={`h-2 flex-grow ${index == 0 ? 'rounded-l-full' : ''} ${
-                index == steps.length - 1 ? 'rounded-r-full' : ''
-              } ${currentStep >= index ? 'bg-primary' : 'bg-muted-foreground'}`}
+              className={`h-2 flex-grow ${index == 0 ? 'rounded-l-full' : ''} ${index == steps.length - 1 ? 'rounded-r-full' : ''
+                } ${currentStep >= index ? 'bg-primary' : 'bg-muted'}`}
             ></div>
           ))}
         </div>

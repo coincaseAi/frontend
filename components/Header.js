@@ -1,10 +1,9 @@
 'use client'
 
-import React from 'react'
-import { Button } from "@/components/ui/button"
+import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Moon, Sun } from 'lucide-react'
+import ConnectWallet from './ConnectWallet'
 
 function NavLink({ href, children }) {
     const pathname = usePathname()
@@ -23,25 +22,23 @@ function NavLink({ href, children }) {
     )
 }
 
+
+
 function Header() {
+
     return (
         <header className="border-b">
             <div className="container flex items-center justify-between px-4 py-4 mx-auto">
                 <div className="text-2xl font-bold text-primary">Coincase</div>
-                <Button >Connect Wallet</Button>
-                {/* <button onClick={() => {
-                    document.documentElement.classList.toggle('dark')
-                }}>
-                    {
-                        document.documentElement.classList.contains('dark') ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />
-                    }
-                </button> */}
+                <ConnectWallet />
+
             </div>
-            <nav className="container flex w-full px-4 mx-auto overflow-x-auto ">
+            <nav className="container flex w-full px-4 mx-auto overflow-x-auto scrollbar-none ">
                 <div className="flex space-x-8">
                     <NavLink href="/home/discover">Discover</NavLink>
                     <NavLink href="/home/watchlist">Watchlist</NavLink>
                     <NavLink href="/home/mycoincases">My Coincases</NavLink>
+                    <NavLink href="/home/portfolio">Portfolio</NavLink>
                 </div>
             </nav>
         </header>
