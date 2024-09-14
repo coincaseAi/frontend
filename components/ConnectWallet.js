@@ -6,24 +6,12 @@ import { WalletMinimal, ChevronDown } from 'lucide-react'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer'
 import { X } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
 
-const icons = {
-    'MetaMask': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/480px-MetaMask_Fox.svg.png',
+const walletImages = {
+    'MetaMask': 'https://cdn.worldvectorlogo.com/logos/metamask.svg',
     'WalletConnect': 'https://images.prismic.io/wallet-connect/65785a56531ac2845a260732_WalletConnect-App-Logo-1024X1024.png?auto=format,compress',
-    'Coinbase Wallet': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Safe': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Trust': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Ledger': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Rainbow': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Brave': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Opera': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'imToken': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Math Wallet': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'TokenPocket': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Safe': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Trust': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
-    'Ledger': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'CoinbaseWallet': 'https://play-lh.googleusercontent.com/wrgUujbq5kbn4Wd4tzyhQnxOXkjiGqq39N4zBvCHmxpIiKcZw_Pb065KTWWlnoejsg',
+
 }
 
 function WalletOptions() {
@@ -36,6 +24,8 @@ function WalletOptions() {
         if (error) { toast.error(error.message) }
         if (isConnected) { toast.success('Connected to wallet') }
     }, [error, isConnected])
+
+
 
     const handleDisconnect = () => {
         setIsAlertOpen(true)
@@ -85,16 +75,15 @@ function WalletOptions() {
                                 key={connector.id}
                                 onClick={() => connect({ connector })}
                                 disabled={status === 'pending'}
-                                className="flex items-center p-2 space-x-2"
+                                className="flex items-center w-full p-2 space-x-2"
                             >
-                                <img
-                                    src={icons[connector.name]}
+                                {walletImages[connector.name] ? <img
+                                    src={walletImages[connector.name]}
                                     alt={connector.name}
                                     className="w-6 h-6 rounded"
-                                />
+                                /> : <WalletMinimal className='w-6 h-6 ' />}
                                 <span>{connector.name}</span>
-
-
+                                {connector.type === 'injected' && <span className='ml-auto text-xs text-muted-foreground'>Injected</span>}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>
