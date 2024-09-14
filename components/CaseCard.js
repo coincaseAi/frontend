@@ -9,18 +9,15 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import VolatilityBadge from './VolatilityBadge';
 import { Bookmark, Users } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { availableTokens } from '@/constants/mockData';
+import { availableTokens } from '@/constants/tokens';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#36A2EB', '#FFCE56'];
 
 const CaseCard = memo(({ caseData, onToggleWatchlist, isWatchlisted }) => {
     const { id, name, description, assets, returns, subscribers, creator, volatility, performance, isSubscribed } = caseData;
 
     const isPositive = performance[0].value <= performance[performance.length - 1].value;
-
 
 
     const lineData = {
@@ -66,18 +63,23 @@ const CaseCard = memo(({ caseData, onToggleWatchlist, isWatchlisted }) => {
 
     return (
         <Card className="w-full relative transition-all   duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg">
-            <CardContent className="p-3 group">
+            <CardContent className="flex flex-col gap-4 p-3 group">
                 <button
                     onClick={(e) => {
                         e.preventDefault(); // Prevent navigation when clicking the bookmark
                         onToggleWatchlist(caseData.id);
                     }}
-                    className="absolute transition-colors -top-1 right-3 text-primary hover:text-primary-dark"
+                    className="absolute z-50 transition-colors -top-1 right-3 text-primary hover:text-primary-dark"
                 >
                     <Bookmark className={`w-6 h-6 ${isWatchlisted ? 'fill-primary stroke-primary' : 'stroke-muted-foreground  group-hover:visible lg:invisible'}`} />
                 </button>
+                {isSubscribed && (
+                    <div variant="secondary" className="text-[10px] rounded-b absolute top-0 right-10 px-2 py-1 z-50 font-medium uppercase text-green-500 pointer-events-none bg-green-500/20">
+                        Subscribed
+                    </div>
+                )}
 
-                <div className="flex gap-2 mb-4 ">
+                <div className="flex gap-2 ">
                     <Avatar className="w-12 h-12 rounded">
                         <AvatarImage src={creator.avatar} alt={name} className="rounded" />
                         <AvatarFallback className="rounded">{name.charAt(0)}</AvatarFallback>
@@ -89,19 +91,13 @@ const CaseCard = memo(({ caseData, onToggleWatchlist, isWatchlisted }) => {
                                     {name}
                                 </Link>
 
-                            </CardTitle>   {isSubscribed && (
-                                <Badge variant="secondary" className="text-[10px] font-medium uppercase text-green-500 pointer-events-none bg-green-500/20">
-                                    Subscribed
-                                </Badge>
-                            )}
+                            </CardTitle>
 
 
                         </div>
-                        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+                        <div className="mt-2 text-sm text-muted-foreground">{description}</div>
                     </div>
-
                 </div>
-
                 {/* <div className="mb-4">
                     <div className="flex w-full h-6 overflow-hidden rounded-md">
                         {assets.map((asset, index) => (
@@ -128,17 +124,20 @@ const CaseCard = memo(({ caseData, onToggleWatchlist, isWatchlisted }) => {
                         ))}
                     </div>
                 </div> */}
-                <div className="flex items-center justify-between w-full gap-1 mb-4 ">
+                <div className="flex items-center justify-between w-full gap-1 ">
 
                     <div className='flex flex-col text-sm font-medium'>
                         <span className='text-[10px] font-light text-muted-foreground'>
+
                             Subscribers
                         </span>
-                        {subscribers}
+                        <div className='flex items-center gap-1'>
+                            <Users className='inline-block w-3 h-3' />{subscribers}
+                        </div>
                     </div>
                     <div className='flex flex-col text-sm font-medium'>
                         <span className='text-[10px] font-light text-muted-foreground'>
-                            1 day
+                            1 day ROI
                         </span>
                         <span className={`text-xs ${returns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {returns >= 0 ? '+' : ''}{returns}%
@@ -161,22 +160,23 @@ const CaseCard = memo(({ caseData, onToggleWatchlist, isWatchlisted }) => {
                 </div>
 
                 {/* New section for involved assets */}
-                <div className="flex items-center mt-3 space-x-1">
-                    {assets.slice(0, 3).map((asset, index) => {
-                        const token = availableTokens.find(t => t.symbol === asset.currency);
-                        return (
-                            <Avatar key={index} className="w-6 h-6 ">
-                                <AvatarImage src={token?.image} alt={asset.currency} />
-                                <AvatarFallback>{asset.currency.slice(0, 2)}</AvatarFallback>
-                            </Avatar>
-                        );
-                    })}
+                <div className="flex items-center space-x-1">
+                    <div className='flex -space-x-2'>
+                        {assets.slice(0, 3).map((asset, index) => {
+                            const token = availableTokens.find(t => t.symbol === asset.currency);
+                            return (
+                                <Avatar key={index} className="w-6 h-6 bg-white border-2 border-background ">
+                                    <AvatarImage src={token?.logoURI} alt={asset.currency} />
+                                    <AvatarFallback>{asset.currency.slice(0, 2)}</AvatarFallback>
+                                </Avatar>
+                            );
+                        })}</div>
                     {assets.length > 3 && (
-                        <Avatar className="w-6 h-6 ">
-                            <AvatarFallback className="text-xs bg-muted">+{assets.length - 3}</AvatarFallback>
-                        </Avatar>
+                        <div className="text-xs ">
+                            +{assets.length - 3}
+                        </div>
                     )}
-                    <span className="ml-2 text-xs text-muted-foreground">
+                    <span className="pl-2 text-xs text-muted-foreground">
                         {assets.length} {assets.length === 1 ? 'asset' : 'assets'}
                     </span>
                 </div>

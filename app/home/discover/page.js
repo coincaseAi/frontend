@@ -6,6 +6,8 @@ import CaseCard from '@/components/CaseCard'
 import { useWatchlist } from '@/context/WatchlistContext'
 import { toast } from 'sonner';
 import { mockCases } from '@/constants/mockData';
+import { Button } from "@/components/ui/button";
+import { SparklesIcon } from "lucide-react";
 
 export default function DiscoverPage() {
     const { watchlist, toggleWatchlist } = useWatchlist();
@@ -16,16 +18,21 @@ export default function DiscoverPage() {
     };
 
     return (
-        <div>
-            <div className="flex flex-col justify-between gap-4 mb-6 md:flex-row">
+        <>
+            <div className="flex justify-between gap-2 mb-4 ">
                 <Input
                     type="search"
                     placeholder="Search Coincases"
                     className="w-full"
                 />
-                <FilterOptions />
+                <Button >
+                    <SparklesIcon className="w-4 h-4 mr-1" />
+                    Search
+
+                </Button>
+                {/* <FilterOptions /> */}
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {mockCases.map((caseData) => (
                     <CaseCard
                         key={caseData.id}
@@ -35,6 +42,6 @@ export default function DiscoverPage() {
                     />
                 ))}
             </div>
-        </div>
+        </>
     )
 }
