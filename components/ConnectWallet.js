@@ -2,16 +2,28 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { WalletMinimal } from 'lucide-react'
+import { WalletMinimal, ChevronDown } from 'lucide-react'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer'
 import { X } from 'lucide-react'
-
-
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
 
 const icons = {
     'MetaMask': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/480px-MetaMask_Fox.svg.png',
     'WalletConnect': 'https://images.prismic.io/wallet-connect/65785a56531ac2845a260732_WalletConnect-App-Logo-1024X1024.png?auto=format,compress',
+    'Coinbase Wallet': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Safe': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Trust': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Ledger': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Rainbow': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Brave': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Opera': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'imToken': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Math Wallet': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'TokenPocket': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Safe': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Trust': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
+    'Ledger': 'https://assets.coinbase.com/assets/wallets/wallet-extension/icon.png',
 }
 
 function WalletOptions() {
@@ -51,7 +63,7 @@ function WalletOptions() {
                                 </Button>
                             </DrawerHeader>
                             <DrawerDescription className="px-4">
-                                Are you sure you want to disconnect your wallet? This action cannot be undone.
+                                Are you sure you want to disconnect your wallet?
                             </DrawerDescription>
                             <DrawerFooter>
                                 <Button className='bg-destructive hover:bg-destructive/90 text-destructive-foreground' onClick={confirmDisconnect}>Disconnect</Button>
@@ -59,28 +71,35 @@ function WalletOptions() {
                         </DrawerContent>
                     </Drawer>
                 </>
-            ) :
-                <div style={{
-                    pointerEvents: status === 'pending' ? 'none' : 'auto',
-                    opacity: status === 'pending' ? 0.5 : 1,
-                }} className='flex items-center gap-2 text-sm font-medium'>
-                    {status === 'pending' ? 'Connecting...' : 'Connect wallet'}
-                    {connectors.map((connector) => (
-                        <button
-                            key={connector.id}
-                            alt={connector.name}
-                            className='w-8 h-8 rounded cursor-pointer '
-                            onClick={() => connect({ connector })}
-                            disabled={status === 'pending'}
-                        >
-                            <img
-                                src={icons[connector.name]}
-                                alt={connector.name}
-                                className='object-cover w-full h-full rounded bg-muted'
-                            />
-                        </button>
-                    ))}
-                </div>}
+            ) : (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                            Connect Wallet
+                            <ChevronDown className="w-4 h-4 ml-2" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end">
+                        {connectors.map((connector) => (
+                            <DropdownMenuItem
+                                key={connector.id}
+                                onClick={() => connect({ connector })}
+                                disabled={status === 'pending'}
+                                className="flex items-center p-2 space-x-2"
+                            >
+                                <img
+                                    src={icons[connector.name]}
+                                    alt={connector.name}
+                                    className="w-6 h-6 rounded"
+                                />
+                                <span>{connector.name}</span>
+
+
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )}
         </div>
     )
 }
