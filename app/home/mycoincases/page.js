@@ -5,18 +5,14 @@ import { mockCases } from '@/constants/mockData';
 import { CreateCaseDrawer } from './components/CreateCaseDrawer';
 import { Button } from "@/components/ui/button";
 import { Plus } from 'lucide-react';
-import CaseCard from "@/components/CaseCard"; // Add this import
 import { useWatchlist } from '@/context/WatchlistContext';
 import { toast } from 'sonner';
+import MyCoinCaseCard from '@/components/MyCoinCaseCard';
 
 export default function MyCoincasesPage() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const userCases = mockCases.filter(c => c.createdByUser);
-    const { watchlist, toggleWatchlist } = useWatchlist();
-    const handleToggleWatchlist = (caseId) => {
-        toggleWatchlist(caseId);
-        toast.success('Watchlist updated');
-    };
+
 
 
     const openDrawer = () => setIsDrawerOpen(true);
@@ -34,11 +30,9 @@ export default function MyCoincasesPage() {
             <CreateCaseDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {userCases.map((caseData) => (
-                    <CaseCard
+                    <MyCoinCaseCard
                         key={caseData.id}
                         caseData={caseData}
-                        onToggleWatchlist={() => handleToggleWatchlist(caseData.id)}
-                        isWatchlisted={watchlist.includes(caseData.id)}
                     />
                 ))}
             </div>

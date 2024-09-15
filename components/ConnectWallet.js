@@ -1,6 +1,6 @@
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { toast } from 'sonner'
 import { WalletMinimal, ChevronDown } from 'lucide-react'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer'
@@ -8,10 +8,9 @@ import { X } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const walletImages = {
-    'MetaMask': 'https://cdn.worldvectorlogo.com/logos/metamask.svg',
-    'WalletConnect': 'https://images.prismic.io/wallet-connect/65785a56531ac2845a260732_WalletConnect-App-Logo-1024X1024.png?auto=format,compress',
-    'CoinbaseWallet': 'https://play-lh.googleusercontent.com/wrgUujbq5kbn4Wd4tzyhQnxOXkjiGqq39N4zBvCHmxpIiKcZw_Pb065KTWWlnoejsg',
-
+    'MetaMask': 'https://app.uniswap.org/static/media/metamask-icon.c8b2298e68e585a7f4d9c7b7e6320715.svg',
+    'WalletConnect': 'https://app.uniswap.org/static/media/walletconnect-icon.bd207ef6f3632304cd1b6e772271cb43.svg',
+    'CoinbaseWallet': 'https://app.uniswap.org/static/media/coinbase-icon.6870e62fb40f1d213198361a1b3d5521.svg'
 }
 
 function WalletOptions() {
@@ -21,23 +20,22 @@ function WalletOptions() {
     const [isAlertOpen, setIsAlertOpen] = useState(false)
 
     useEffect(() => {
-        if (error) { toast.error(error.message) }
+        if (error) { toast.error(error?.message) }
         if (isConnected) { toast.success('Connected to wallet') }
     }, [error, isConnected])
 
-
-
-    const handleDisconnect = () => {
+    const handleDisconnect = useCallback(() => {
         setIsAlertOpen(true)
-    }
+    }, [])
 
-    const confirmDisconnect = () => {
+    const confirmDisconnect = useCallback(() => {
         disconnect()
         setIsAlertOpen(false)
-    }
+    }, [disconnect])
 
     return (
         <div className='flex items-center space-x-2'>
+
             {isConnected ? (
                 <>
                     <Button variant='outline' onClick={handleDisconnect}>
@@ -70,7 +68,7 @@ function WalletOptions() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end">
-                        {connectors.map((connector) => (
+                        {connectors?.length > 0 && connectors?.map((connector) => (
                             <DropdownMenuItem
                                 key={connector.id}
                                 onClick={() => connect({ connector })}
@@ -82,8 +80,8 @@ function WalletOptions() {
                                     alt={connector.name}
                                     className="w-6 h-6 rounded"
                                 /> : <WalletMinimal className='w-6 h-6 ' />}
-                                <span>{connector.name}</span>
-                                {connector.type === 'injected' && <span className='ml-auto text-xs text-muted-foreground'>Injected</span>}
+                                <span>{connector?.name}</span>
+                                {connector?.type === 'injected' && <span className='ml-auto text-xs text-muted-foreground'>Injected</span>}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>
