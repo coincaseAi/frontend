@@ -1,18 +1,34 @@
 'use client'
-import { WagmiProvider } from 'wagmi'
-import { config } from '@/config/wagmiConfig'
+
+import React, { ReactNode } from 'react'
+import { config, projectId, metadata } from '@/config/wagmiConfig'
+
+import { createWeb3Modal } from '@web3modal/wagmi/react'
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import { State, WagmiProvider } from 'wagmi'
+
+// Setup queryClient
 const queryClient = new QueryClient()
 
-function WagmiWalletProvider({ children }) {
+if (!projectId) throw new Error('Project ID is not defined')
+
+// Create modal
+createWeb3Modal({
+    metadata,
+    wagmiConfig: config,
+    projectId,
+    enableAnalytics: true // Optional - defaults to your Cloud configuration
+})
+
+export default function AppKitProvider({
+    children,
+    initialState
+}) {
     return (
-        <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
-                {children}
-            </QueryClientProvider>
+        <WagmiProvider config={config} initialState={initialState}>
+            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         </WagmiProvider>
     )
 }
-
-export default WagmiWalletProvider;

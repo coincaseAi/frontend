@@ -1,21 +1,27 @@
-import { http, createConfig } from 'wagmi'
-import { mainnet } from 'wagmi/chains'
-import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
-const projectId = 'd1fd9d4a9453725007445949558193db'
+import { cookieStorage, createStorage } from 'wagmi'
+import { mainnet, sepolia } from 'wagmi/chains'
 
-export const config = createConfig({
-    chains: [mainnet],
-    connectors: [
-        // injected(),
-        walletConnect({ projectId }),
-        // metaMask(),
-        // safe(),
-    ],
-    ssr: false,
-    transports: {
-        [mainnet.id]: http(),
-    },
+export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+
+if (!projectId) throw new Error('Project ID is not defined')
+
+export const metadata = {
+    name: 'coincase',
+    description: 'coincase dapp',
+    url: 'https://coincase.ai', // origin must match your domain & subdomain
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
+}
+
+// Create wagmiConfig
+const chains = [mainnet, sepolia]
+export const config = defaultWagmiConfig({
+    chains,
+    projectId,
+    metadata,
+    ssr: true,
+    storage: createStorage({
+        storage: cookieStorage
+    }),
 })
-
-

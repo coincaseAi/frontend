@@ -44,23 +44,32 @@ export default function PortfolioOverview({ cases }) {
         }
     };
 
+    // Calculate asset weightage
+    const assets = cases.map(c => ({
+        name: c.name,
+        weightage: ((c.value / totalValue) * 100).toFixed(2)
+    }));
+
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}  >
-                    <DrawerTrigger asChild>
-                        <Card className="transition-colors cursor-pointer hover:bg-accent">
-                            <CardHeader>
-                                <CardTitle>Net Worth</CardTitle>
-                            </CardHeader>
-                            <CardContent className="">
-                                $<NumberTicker className="text-3xl font-bold " value={totalValue} />
-                                <span className={`text-base ml-2 font-normal ${totalReturns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                    {returnsPercentage}%
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                    <Card  >
+                        <CardHeader className="flex flex-row items-center justify-between px-4 py-3 border-b">
+                            <CardTitle >Net Worth</CardTitle>
+                            <DrawerTrigger asChild>
+                                <span className="text-xs text-blue-500 cursor-pointer hover:underline">
+                                    View Details
                                 </span>
-                            </CardContent>
-                        </Card>
-                    </DrawerTrigger>
+                            </DrawerTrigger>
+                        </CardHeader>
+                        <CardContent className="px-4 py-3">
+                            $<NumberTicker className="text-3xl font-bold" value={totalValue} />
+                            <span className={`text-base ml-2 font-normal ${totalReturns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {returnsPercentage}%
+                            </span>
+                        </CardContent>
+                    </Card>
 
                     <DrawerContent className="bg-background focus:ring-transparent flex flex-col max-w-md mx-auto rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
                         <div className="p-5 bg-background rounded-t-[10px] flex-1 overflow-y-auto">
@@ -99,25 +108,40 @@ export default function PortfolioOverview({ cases }) {
                     </DrawerContent>
 
                 </Drawer>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Card>
-                    <CardHeader>
+                    <CardHeader className='px-4 py-3 border-b'>
                         <CardTitle>Portfolio Allocation</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px]">
-                            <Doughnut data={data} options={options} />
+                    <CardContent className='px-4 py-3'>
+                        <div className="flex w-full h-6 gap-0.5 rounded-md overflow-hidden">
+                            {assets.map((asset, index) => (
+                                <div title={`${asset.name}: ${asset.weightage}%`} key={index} style={{ width: `${asset.weightage}%`, backgroundColor: colors[index % colors.length] }}>
+
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex flex-col mt-4 space-y-2">
+                            {assets.map((asset, index) => (
+                                <div key={index} className="flex items-center">
+                                    <div
+                                        className="w-2 h-2 mr-2 rounded-full"
+                                        style={{ backgroundColor: colors[index % colors.length] }}
+                                    />
+                                    <span className="flex-grow text-sm">{asset.name}</span>
+                                    <span className="text-sm font-medium">{asset.weightage}%</span>
+                                </div>
+                            ))}
                         </div>
                     </CardContent>
 
                 </Card>
-                <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-medium">Portfolio Breakdown</h3>
 
-                    </div>
-
+            </div>
+            <Card>
+                <CardHeader className='px-4 py-3 border-b'>
+                    <CardTitle>Portfolio Breakdown</CardTitle>
+                </CardHeader>
+                <CardContent className='px-4 py-3'>
                     <div className="overflow-x-auto text-xs lg:text-sm">
                         <table className="w-full">
                             <thead>
@@ -154,9 +178,9 @@ export default function PortfolioOverview({ cases }) {
                             </tbody>
                         </table>
                     </div>
+                </CardContent>
 
-                </div>
-            </div>
+            </Card>
         </div>
     );
 }
