@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { SendCrypto } from '@/components/SendCrypto';
 import { useReadContract, useBalance, useAccount, useWriteContract } from 'wagmi';
 import abi from '@/config/abi.json';
-import { readContract } from 'viem/actions';
-import { config } from '@/config/wagmiConfig';
-
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { formatEther } from 'viem';
 const testAbi = [
     {
         "inputs": [
@@ -36,12 +36,18 @@ const testAbi = [
 ]
 
 const HomePage = () => {
-    const [message, setMessage] = useState('')
+    const result = useReadContract({
+        abi: testAbi,
+        address: '0xC6D6F52c3C9A9a54C881477f704bD9FD0F0A3295',
+        functionName: 'retrieve',
+    })
+
+    console.log(result)
 
 
     const { data: hash, writeContract } = useWriteContract()
 
-    const { data: balance } = useBalance({
+    const { data: balance, refetch: refetchBalance } = useBalance({
         address: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
         chainId: 11155111,
     });
@@ -61,25 +67,20 @@ const HomePage = () => {
         console.log(hash)
     }
 
-    const handleRetrieve = async () => {
-        const { data } = await readContract(config, {
-            abi: testAbi,
-            address: '0xC6D6F52c3C9A9a54C881477f704bD9FD0F0A3295',
-            functionName: 'retrieve',
-        })
-        console.log(data)
-    }
+    useEffect(() => {
+        console.log(balance)
+    }, [balance])
 
 
     return (
         <div className="container p-4 mx-auto space-y-8">
             <h1 className="mb-4 text-2xl font-bold">Home</h1>
             {/* <SendCrypto /> */}
-            <p>Message: {message}</p>
-            <input id='message' type="text" placeholder="Enter message" />
-            <button onClick={handleStore}>Store</button>
-            <button onClick={handleRetrieve}>Retrieve</button>
-
+            <Input id='message' type="text" placeholder="Enter message" />
+            <Button onClick={handleStore}>Store</Button>
+            <p>Message: {result.data}</p>
+            {result.isPending ? <p>Loading...</p> : result.isError ? <p>Error</p> : <p>Message: {result.data}</p>}
+            <Button onClick={result.refetch}>Retrieve</Button>
         </div>
     );
 };
