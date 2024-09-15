@@ -15,7 +15,7 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
       e.currentTarget.style.background = 'rgb(255 255 255 / 0)';
     }}
     className={cn(
-      'rounded-2xl border border-primary/50 backdrop-blur-lg text-card-foreground shadow',
+      'rounded-2xl border border-primary/50 backdrop-blur-lg text-card-foreground shadow relative overflow-hidden',
       className
     )}
     {...props}
