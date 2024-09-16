@@ -7,7 +7,7 @@ export default function Whitepaper() {
       content: (
         <>
           <p>
-            The cryptocurrency investment space has grown tremendously,
+            The cryptocurrency(s) investment space has grown tremendously,
             attracting both seasoned and new investors. Despite its growth, the
             crypto market remains difficult for many to navigate due to the
             large number of tokens, high volatility, and lack of expert

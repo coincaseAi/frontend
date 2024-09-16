@@ -26,7 +26,7 @@ export function LandingPage() {
   const [placeholderText, setPlaceholderText] = useState('');
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen(!isMenuOpen); //
   };
 
   const defaultOptions = {
