@@ -7,47 +7,49 @@ import { config } from '@/config/wagmiConfig'
 import { Button } from '@/components/ui/button';
 import { formatEther, parseEther } from 'viem';
 import { toast } from 'sonner';
-const caseFactoryAddress = '0xE634d83f8E016B04e51F2516e6086b5f238675C7'
+import { Input } from '@/components/ui/input';
+const caseFactoryAddress = '0xC6D6F52c3C9A9a54C881477f704bD9FD0F0A3295'
+const testAbi = [
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "message1",
+                "type": "string"
+            }
+        ],
+        "name": "store",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "retrieve",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
 
 const HomePage = () => {
-    const { data: creationFee, isLoading, isError, isRefetching, refetch } = useReadContract({
-        abi: abi,
+    const { data: message, isFetching, isError, Error, isRefetching, refetch } = useReadContract({
+        abi: testAbi,
         address: caseFactoryAddress,
-        functionName: 'getCreationFee',
+        functionName: 'retrieve',
         args: [],
-        enabled: true,
+        watch: true,
     })
 
     const { data: hash, error, status, writeContractAsync } = useWriteContract()
 
-    const handleCreateCase = async () => {
-        try {
-            const tx = await writeContractAsync({
-                abi: abi,
-                address: caseFactoryAddress,
-                functionName: 'createCase',
-                args: [
-                    "My First Case",
-                    [
-                        "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", // UNI
-                        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"  // WBTC
-                    ],
-                    [50, 50],
-                    '0x0000000000000000000000000000000000000000', // ETH as payment token
-                    [
-                        parseEther("0"),
-                        parseEther("0"),
-                        parseEther("0")
-                    ],
-                    false // Making this case public
-                ],
-            })
-            console.log(tx)
-        } catch (error) {
-            toast.error(error.message.toString().split('.')[0])
-            console.log(error.message.toString().split('.')[0])
-        }
-    }
+
 
     const { address } = useAccount();
 
@@ -94,13 +96,41 @@ const HomePage = () => {
 
 
     useEffect(() => {
-        console.log(creationFee, isRefetching)
+        console.log(message, isRefetching)
     }, [isRefetching])
+
+
+
+    const handleStoreValue = async (e) => {
+        e.preventDefault()
+        const value = e.target.value.value
+
+        try {
+            const tx = await writeContractAsync({
+                abi: testAbi,
+                address: caseFactoryAddress,
+                functionName: 'store',
+                args: [value], // Replace 42 with the actual value you want to store
+            });
+            console.log('Transaction sent:', tx);
+            toast.success('Value storage transaction sent');
+            refetch()
+
+        } catch (error) {
+            console.error('Error storing value:', error);
+            toast.error('Failed to store value: ' + error.message.toString().split('.')[0]);
+        }
+    }
+
+    useEffect(() => {
+        // You can call handleStoreValue here if you want to store a value when the component mounts
+        // handleStoreValue();
+    }, []);
 
 
     return (
         <div className="container p-4 mx-auto space-y-8">
-            <h1 className="mb-4 text-2xl font-bold">Home</h1>
+            {/* <h1 className="mb-4 text-2xl font-bold">Home</h1>
             <p>Creation Fee: {creationFee ? formatEther(creationFee) : 'Loading...'}</p>
             <Button onClick={async () => {
 
@@ -111,7 +141,17 @@ const HomePage = () => {
             <Button onClick={() => { handleSendEth() }}>Send ETH</Button>
             <p>Hash: {hash}</p>
             <p>Error: {error?.message?.toString().split('.')[0]}</p>
-            <p>Status: {status}</p>
+            <p>Status: {status}</p> */}
+            <p> {isFetching ? 'Loading...' : isError ? Error?.toString() : message}</p>
+
+            <Button onClick={() => { refetch() }}>Refetch</Button>
+
+            <form onSubmit={handleStoreValue}>
+                <Input type="text" name="value" />
+                <Button type="submit">Store Value</Button>
+            </form>
+
+
         </div >
     );
 };

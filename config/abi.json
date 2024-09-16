@@ -32,8 +32,67 @@
   },
   {
     "inputs": [],
-    "name": "ERC1167FailedCreateClone",
+    "name": "FailedDeployment",
     "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "needed",
+        "type": "uint256"
+      }
+    ],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "updater",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newUniswapRouter",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newFeeCollector",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newUniswapFactory",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newCaseImplementation",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newWalletImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "AddressesUpdated",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -176,8 +235,37 @@
     "type": "function"
   },
   {
-    "stateMutability": "payable",
-    "type": "fallback"
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newUniswapRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newFeeCollector",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newUniswapFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newCaseImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newWalletImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "updateAddresses",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "stateMutability": "payable",
@@ -198,31 +286,7 @@
   },
   {
     "inputs": [],
-    "name": "creationFee",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "creatorCases",
+    "name": "feeCollector",
     "outputs": [
       {
         "internalType": "address",
@@ -235,12 +299,12 @@
   },
   {
     "inputs": [],
-    "name": "feeCollector",
+    "name": "getAllCreators",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address[]",
         "name": "",
-        "type": "address"
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -299,6 +363,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

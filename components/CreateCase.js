@@ -9,8 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Trash, X } from 'lucide-react';
-import { availableTokens } from '@/constants/tokens';
-import { colors } from '@/constants/mockData';
+import { maticTokens, availableTokens } from '@/constants/tokens';
+import { caseFactoryAddress, colors } from '@/constants/mockData';
 import {
   Select,
   SelectContent,
@@ -19,12 +19,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
+import { useWriteContract } from 'wagmi';
+import { parseEther } from 'viem';
+import abi from '@/config/abi.json';
+
+const tokens = availableTokens;
+const paymentToken = '0x0000000000000000000000000000000000000000'
+
 
 const steps = [
   { title: 'Basic Information', fields: ['name', 'description'] },
@@ -60,7 +64,7 @@ export default function CreateCase({ onClose }) {
   const [selectedWeight, setSelectedWeight] = useState(0);
   const [remainingWeight, setRemainingWeight] = useState(100);
 
-  const filteredTokens = useMemo(() => availableTokens.filter(token =>
+  const filteredTokens = useMemo(() => tokens.filter(token =>
     token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
   ), [searchTerm]);
@@ -83,7 +87,7 @@ export default function CreateCase({ onClose }) {
   }, [formData]);
 
   const handleTokenSelect = useCallback((tokenAddress) => {
-    const token = availableTokens.find(t => t.address === tokenAddress);
+    const token = tokens.find(t => t.address === tokenAddress);
     setSelectedToken(token);
     setSelectedWeight(0);
   }, []);
@@ -133,11 +137,40 @@ export default function CreateCase({ onClose }) {
     }
   }, [currentStep]);
 
+  const { writeContractAsync } = useWriteContract();
+
+  const handleCreateCase = async () => {
+    try {
+      const tx = await writeContractAsync({
+        abi: abi,
+        address: caseFactoryAddress,
+        functionName: 'createCase',
+        args: [
+          formData.name,
+          formData.assets.map(asset => tokens.find(token => token.symbol === asset.currency).address),
+          formData.assets.map(asset => asset.weightage),
+          paymentToken,
+          [
+            parseEther(formData.subscriptionFee1Month || "0"),
+            parseEther(formData.subscriptionFee6Months || "0"),
+            parseEther(formData.subscriptionFee12Months || "0")
+          ],
+          formData.isPublic
+        ],
+      });
+      console.log(tx);
+      toast.success(`Case created successfully! \n ${tx}`);
+
+      onClose && onClose();
+    } catch (error) {
+      toast.error(error.message.toString().split('.')[0]);
+      console.error('Error creating case:', error);
+    }
+  };
+
   const handleSubmit = useCallback(() => {
-    console.log(formData);
-    toast.success('Case created successfully!');
-    onClose && onClose();
-  }, [formData, onClose]);
+    handleCreateCase();
+  }, [formData]);
 
   const isStepValid = useCallback(() => {
     switch (currentStep) {
@@ -224,7 +257,7 @@ export default function CreateCase({ onClose }) {
               </div>
               <div className='grid grid-cols-1 gap-1 '>
                 {formData.assets.map((asset, index) => {
-                  const token = availableTokens.find(
+                  const token = tokens.find(
                     (t) => t.symbol === asset.currency
                   );
                   return (
@@ -440,7 +473,7 @@ export default function CreateCase({ onClose }) {
 
             <div className='flex flex-wrap gap-2'>
               {formData.assets.map((asset, index) => {
-                const token = availableTokens.find(
+                const token = tokens.find(
                   (t) => t.symbol === asset.currency
                 );
                 return (

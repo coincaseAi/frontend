@@ -1,6 +1,6 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { cookieStorage, createStorage } from 'wagmi'
-import { mainnet, sepolia, Chain } from 'wagmi/chains'
+import { mainnet, sepolia, Chain, polygon } from 'wagmi/chains'
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 
@@ -44,7 +44,7 @@ const optimus = {
     },
 }
 // Create wagmiConfig
-const chains = [mainnet, sepolia, rushiLocal, optimus]
+const chains = [mainnet, sepolia, rushiLocal, optimus, polygon]
 
 export const config = defaultWagmiConfig({
     chains,
