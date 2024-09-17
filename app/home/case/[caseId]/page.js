@@ -97,22 +97,25 @@ export default function CaseDetails() {
             isError ? <div>Error</div> :
                 !data ? <div>No data</div> :
                     <>
-                        <div className="mt-3">
-                            <Button
-                                variant="ghost"
-                                onClick={() => router.back()}
-                                className="flex items-center"
-                            >
-                                <ChevronLeft className="w-4 h-4 mr-2 -ml-2" />
-                                Back
-                            </Button>
-                        </div>
-                        <div className="container p-3 mx-auto">
+
+                        <Button
+                            variant="ghost"
+                            onClick={() => router.back()}
+                            className="flex items-center -ml-3"
+                        >
+                            <ChevronLeft className="w-4 h-4 mr-2 -ml-2" />
+                            Back
+                        </Button>
+
+                        <div className="container mx-auto">
                             <div className="flex flex-col items-start justify-between mb-6 md:flex-row">
                                 <div className="flex flex-col w-full gap-2">
-                                    <div className="flex items-center justify-between w-full gap-2 ">
+                                    <div className="flex items-center w-full gap-2 ">
                                         <span className="text-xl font-bold ">{data.caseName}</span>
-                                        <Button variant="ghost" size-icon onClick={() => setIsDrawerOpen(true)}>
+                                        <Badge variant={data.isPublic ? "default" : "secondary"} className="ml-2">
+                                            {data.isPublic ? "Public" : "Private"}
+                                        </Badge>
+                                        <Button className='ml-auto' variant="ghost" size="icon" onClick={() => setIsDrawerOpen(true)}>
                                             <Pencil className="w-4 h-4" />
                                         </Button>
                                         {/* {isSubscribed && (
@@ -121,9 +124,7 @@ export default function CaseDetails() {
                             </Badge>
                         )} */}
                                         {/* <VolatilityBadge volatility={volatility} /> */}
-                                        <Badge variant={data.isPublic ? "default" : "secondary"} className="ml-2">
-                                            {data.isPublic ? "Public" : "Private"}
-                                        </Badge>
+
                                     </div>
                                     {/* <p className="mb-4 text-lg">{description}</p> */}
                                     <div className="flex items-center">
