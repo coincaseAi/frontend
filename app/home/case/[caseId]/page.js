@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { mockCases } from '@/constants/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,129 +11,104 @@ import TransactionHistoryTable from '@/components/TransactionHistoryTable';
 import SubscribeDrawer from '@/components/SubscribeDrawer';
 import InvestmentCard from '@/components/InvestmentCard';
 import VolatilityBadge from '@/components/VolatilityBadge';
+import { useReadContract, useAccount, useWriteContract } from 'wagmi';
+import caseAbi from '@/config/caseAbi.json';
+import { Button } from '@/components/ui/button';
+import { mockCases } from '@/constants/mockData';
+import { EraserIcon } from 'lucide-react';
 
 const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#36A2EB', '#FFCE56'];
 
 
 export default function CaseDetails() {
     const params = useParams();
-    const [caseData, setCaseData] = useState(mockCases.find(c => c.id === params.caseId));
+    const { address } = useAccount();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-    if (!caseData) {
-        return <div>Case not found</div>;
+    const { data, isError, isLoading, isFetching, Error, refetch } = useReadContract({
+        address: params.caseId,
+        abi: caseAbi,
+        account: address,
+        functionName: 'getCaseInfo',
+    });
+    if (isFetching) return <div>Loading...</div>;
+    if (isError) {
+        console.log(Error)
+        return <div>Error fetching case data</div>
+    };
+
+    if (!data) {
+        return <div>Case not found
+
+            <Button onClick={() => refetch()}>Refresh</Button>
+        </div>;
     }
+    const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionFees, isPublic] = data;
 
-    const handleSubscribe = (duration, amount) => {
-        // In a real application, you would make an API call here
-        // For now, we'll just update the local state
-        setCaseData(prevData => ({
-            ...prevData,
-            isSubscribed: true,
-            subscriptionDuration: duration,
-            subscriptionAmount: amount
-        }));
+    const isSubscribed = true
+    const volatility = mockCases[0].volatility;
+    const description = mockCases[0].description;
+    const creator = mockCases[0].creator;
+    const returns = mockCases[0].returns;
+    const subscribers = mockCases[0].subscribers;
+    const currentInvestment = mockCases[0].invested;
+    const minimumInvestment = mockCases[0].minimumInvestment;
+
+
+    const handleSubscribe = () => {
+        console.log("subscribe");
+        setIsDrawerOpen(true);
     };
 
-    const { name, description, assets, returns, subscribers, creator, volatility, performance, minimumInvestment, subscriptionFee, isSubscribed, id } = caseData;
-    const currentInvestment = caseData.value || 0;
-    const isFirstTimeInvestor = currentInvestment === 0;
-
-    const isPositive = performance[0].value <= performance[performance.length - 1].value;
-
-    const allocationData = {
-        labels: assets.map(asset => asset.currency),
-        datasets: [{
-            data: assets.map(asset => asset.weightage),
-            backgroundColor: colors,
-        }]
+    const closeDrawer = () => {
+        setIsDrawerOpen(false);
     };
 
-    const performanceData = {
-        labels: performance.map(p => p.date),
-        datasets: [{
-            label: 'Performance',
-            data: performance.map(p => p.value),
-            fill: false,
-            borderColor: isPositive ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
-            tension: 0.4,
-            pointRadius: 0, // Remove points
-        }]
-    };
 
-    const doughnutOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-            },
-        },
-        cutout: '70%',
-        elements: {
-            arc: {
-                borderWidth: 0  // This removes the border from the donut segments
-            }
-        }
-    };
 
-    const lineChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                grid: {
-                    display: false // Remove x-axis grid
-                }
-            },
-            y: {
-                grid: {
-                    display: false // Remove y-axis grid
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false // Remove legend
-            }
-        },
-        elements: {
-            point: {
-                radius: 0 // Ensure points are not displayed
-            }
-        }
-    };
 
     return (
         <div className="container mx-auto ">
             <div className="flex flex-col items-start justify-between mb-6 md:flex-row">
-                <div className="flex flex-col">
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <Link href={`/home/case-details/${id}`} className="text-3xl font-bold ">{name}</Link>
-                        {isSubscribed && (
+                <div className="flex flex-col w-full gap-2">
+                    <div className="flex items-center justify-between w-full gap-2 ">
+                        <Link href={`/home/case-details/${params.caseId}`} className="text-3xl font-bold ">{caseName}</Link>
+                        {/* {isSubscribed && (
                             <Badge variant="secondary" className="text-green-500 bg-green-500/20 hover:bg-green-600">
                                 Subscribed
                             </Badge>
-                        )}
-                        <VolatilityBadge volatility={volatility} />
+                        )} */}
+                        {/* <VolatilityBadge volatility={volatility} /> */}
+                        <Badge variant={isPublic ? "default" : "secondary"} className="ml-2">
+                            {isPublic ? "Public" : "Private"}
+                        </Badge>
                     </div>
-                    <p className="mb-4 text-lg">{description}</p>
+                    {/* <p className="mb-4 text-lg">{description}</p> */}
+                    <div className="flex items-center">
+                        <Avatar className="w-12 h-12 mr-4">
+                            <AvatarImage src={creator.avatar} alt={creator.name} />
+                            <AvatarFallback>{creator.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className='flex flex-col'>
+                            <span className="font-semibold text-l">{`${caseOwner.slice(0, 6)}...${caseOwner.slice(-4)}`}</span>
+                            <span className='text-xs text-muted-foreground'>
+                                Creator of this case {caseOwner == address ? "( You ) " : ""}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex items-center">
-                    <Avatar className="w-12 h-12 mr-4">
-                        <AvatarImage src={creator.avatar} alt={creator.name} />
-                        <AvatarFallback>{creator.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-lg">{creator.name}</span>
-                </div>
+
             </div>
 
             <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Returns</CardTitle>
+                    <CardHeader className='p-3'>
+                        <CardTitle className='text-xl'>
+                            $10000
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <span className={`text-2xl font-bold ${returns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <span className={` font-bold ${returns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {returns >= 0 ? '+' : ''}{returns}%
                         </span>
                     </CardContent>
@@ -158,14 +132,15 @@ export default function CaseDetails() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
-                {caseData.isSubscribed ? (
+                {isSubscribed ? (
                     <>
 
                         <div className="md:col-span-2">
                             <InvestmentCard
-                                isFirstTimeInvestor={isFirstTimeInvestor}
+                                isFirstTimeInvestor={true}
                                 currentInvestment={currentInvestment}
                                 minimumInvestment={minimumInvestment}
+                                caseId={params.caseId}
                             />
                         </div>
                     </>
@@ -176,7 +151,7 @@ export default function CaseDetails() {
                                 <CardTitle>Minimum Investment</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <span className="text-2xl font-bold">${caseData.minimumInvestment}</span>
+                                <span className="text-2xl font-bold">${minimumInvestment}</span>
                             </CardContent>
                         </Card>
                         <Card>
@@ -184,7 +159,7 @@ export default function CaseDetails() {
                                 <CardTitle>Subscription Fee</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <span className="text-2xl font-bold">${caseData.subscriptionFee}</span>
+                                <span className="text-2xl font-bold">${0.001}</span>
                             </CardContent>
                         </Card>
                         <Card>
@@ -192,7 +167,7 @@ export default function CaseDetails() {
                                 <CardTitle>Subscribe</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <SubscribeDrawer caseData={caseData} onSubscribe={handleSubscribe} />
+                                <SubscribeDrawer caseData={params.caseId} onSubscribe={handleSubscribe} />
                             </CardContent>
                         </Card>
                     </>
@@ -203,7 +178,7 @@ export default function CaseDetails() {
             {isSubscribed && (
                 <>
                     <h2 className="mt-8 mb-4 text-2xl font-bold">Assets in this Case</h2>
-                    <CaseAssetTable assets={assets} />
+                    <CaseAssetTable weights={weights} assets={tokens} caseId={params.caseId} />
 
                     <h2 className="mt-8 mb-4 text-2xl font-bold">Transaction History</h2>
                     <TransactionHistoryTable />

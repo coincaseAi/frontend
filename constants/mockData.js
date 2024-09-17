@@ -1,6 +1,6 @@
 import { availableTokens } from './tokens';
 
-export const caseFactoryAddress = '0xF48883F2ae4C4bf4654f45997fE47D73daA4da07';
+export const caseFactoryAddress = '0xA28E65B0444392c7F591A321F9802d900A3229Bc';
 export const maticCaseFactoryAddress = '0x5C33A2dcEBFcaFaE033912710953d63dc16F9fb4';
 
 function generatePerformanceData(initialValue, volatility) {

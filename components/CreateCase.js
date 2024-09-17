@@ -157,6 +157,7 @@ export default function CreateCase({ onClose }) {
           ],
           formData.isPublic
         ],
+        value: formData.isPublic ? parseEther("0.001") : 0
       });
       console.log(tx);
       toast.success(`Case created successfully! \n ${tx}`);
@@ -164,7 +165,7 @@ export default function CreateCase({ onClose }) {
       onClose && onClose();
     } catch (error) {
       toast.error(error.message.toString().split('.')[0]);
-      console.error('Error creating case:', error);
+      console.log('Error creating case:', error);
     }
   };
 

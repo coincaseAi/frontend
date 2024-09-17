@@ -24,8 +24,8 @@ const rushiLocal = {
         symbol: 'ETH',
     },
     rpcUrls: {
-        public: { http: ['https://779f-2-51-37-109.ngrok-free.app'] },
-        default: { http: ['https://779f-2-51-37-109.ngrok-free.app'] },
+        public: { http: ['http://3.6.110.204:8545'] },
+        default: { http: ['http://3.6.110.204:8545'] },
     },
 }
 
