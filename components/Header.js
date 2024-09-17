@@ -21,18 +21,13 @@ function NavLink({ href, children }) {
         </Link>
     )
 }
-
-
-
 function Header() {
-
     return (
         <header className="border-b">
             <div className="container flex items-center justify-between px-4 py-4 mx-auto">
                 <div className="text-xl font-bold text-primary">Coincase</div>
-                {/* <ConnectWallet /> */}             <w3m-button />
-
-
+                {/* <ConnectWallet /> */}
+                <w3m-button />
             </div>
             <nav className="container flex w-full px-4 mx-auto overflow-x-auto scrollbar-none ">
                 <div className="flex space-x-8">

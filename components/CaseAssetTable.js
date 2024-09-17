@@ -1,19 +1,20 @@
 'use client'
 
 import { availableTokens } from '@/constants/tokens';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import abi from '@/config/abi.json';
 import caseWalletAbi from '@/config/caseWalletAbi.json';
 import { caseFactoryAddress } from '@/constants/mockData';
 import { formatEther, formatUnits, parseEther } from 'viem';
+import { Skeleton } from './ui/skeleton';
 
 const currentPrice = 123;
 const avgBuyingPrice = 123;
 const returns = 12;
 const quantity = 123;
 
-const AssetRow = ({ asset, caseAddress, caseHoldingWallet, index, weights }) => {
+const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTotalInvestment }) => {
     const { data: caseHolding, isError, isLoading, Error } = useReadContract({
         address: caseHoldingWallet,
         abi: caseWalletAbi,
@@ -31,25 +32,40 @@ const AssetRow = ({ asset, caseAddress, caseHoldingWallet, index, weights }) => 
     const rateInUSDT = tokenRate ? Number(formatUnits(tokenRate[1], 6)).toFixed(2) : '0.00';
     const quantity = caseHolding ? Number(formatEther(caseHolding)).toFixed(2) : '0.00';
 
+    useEffect(() => {
+        if (caseHolding) {
+            const invested = quantity * rateInUSDT
+            invested && setTotalInvestment((prev) => {
+                return {
+                    ...prev,
+                    [asset.symbol]: invested
+                }
+            });
+
+        }
+    }, [rateInUSDT, quantity]);
+
 
     return (
-        <tr key={index} className="">
-            <td className="px-6 py-4 whitespace-nowrap">{asset.symbol}</td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                {caseHolding && quantity}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                {rateInUSDT}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                {weights[index] ? Number(weights[index]) : 0}%
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">{(quantity * rateInUSDT).toFixed(2)}</td>
-        </tr>
+        isLoading ? <Skeleton className='w-full h-6' /> :
+            isError ? <div>Error</div> :
+                <tr className="text-xs">
+                    <td className="px-6 py-4 whitespace-nowrap">{asset.symbol}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                        {caseHolding ? quantity : '-'}
+                    </td>  <td className="px-6 py-4 whitespace-nowrap">
+                        {weights[index] ? Number(weights[index]) : 0}%
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                        ${rateInUSDT}
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap">${(quantity * rateInUSDT).toFixed(2)}</td>
+                </tr>
     )
 }
 
-function CaseAssetTable({ assets, weights, caseId }) {
+function CaseAssetTable({ assets, weights, caseId, setTotalInvestment }) {
     const { address } = useAccount();
     const { data: caseHoldingWallet, isError, isLoading, Error } = useReadContract({
         address: caseFactoryAddress,
@@ -59,37 +75,33 @@ function CaseAssetTable({ assets, weights, caseId }) {
 
     });
 
-    if (isLoading) return <div>Loading asset data...</div>;
-    if (isError) {
-        console.log(Error)
-        return <div>Error fetching asset data</div>
-    };
-
-
-
     return (
-        <div className="overflow-x-auto border rounded-lg">
-            <table className="min-w-full overflow-hidden rounded-lg ">
-                <thead className="bg-foreground/10">
-                    <tr>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Name</th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Quantity</th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Rate (USD)</th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Weightage</th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Value (USD)</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y ">
-                    {assets.map((coin, index) => {
-                        const asset = availableTokens.find(token => token.address === coin);
-                        return (
-                            <AssetRow weights={weights} caseAddress={caseId} asset={asset} caseHoldingWallet={caseHoldingWallet} index={index} />
-                        )
-                    })}
-                </tbody>
-            </table>
-        </div>
-    );
+        isLoading ? <Skeleton className='w-full h-6' /> :
+            isError ? <div>Error: {Error.message}</div> :
+                <div className="overflow-x-auto border rounded-lg">
+                    <table className="min-w-full overflow-hidden rounded-lg ">
+                        <thead className="bg-foreground/10">
+                            <tr>
+                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Name</th>
+                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Quantity</th>
+                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Weight</th>
+                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Rate (USD)</th>
+
+                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Value (USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y ">
+                            {assets.map((coin, index) => {
+                                const asset = availableTokens.find(token => token.address === coin);
+                                return (
+                                    <AssetRow weights={weights} caseAddress={caseId} asset={asset} caseHoldingWallet={caseHoldingWallet} key={index} index={index} setTotalInvestment={setTotalInvestment} />
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+    )
+
 }
 
 export default CaseAssetTable;

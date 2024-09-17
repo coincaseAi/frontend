@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { CreateCaseDrawer } from './components/CreateCaseDrawer';
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus } from 'lucide-react';
+import { Loader, Loader2, Plus, RefreshCcw } from 'lucide-react';
 import { useAccount, useReadContract } from 'wagmi';
 import { caseFactoryAddress } from '@/constants/mockData';
 import abi from '@/config/abi.json';
@@ -49,10 +49,10 @@ export default function MyCoincasesPage() {
 
     return (
         <div className="container mx-auto">
-            <div className="flex items-center gap-1 mb-6">
-                <h1 className="text-2xl font-bold">My Coincases</h1>
-                <Button className='ml-auto' disabled={isFetching} onClick={refetch}>
-                    {isFetching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh'}
+            <div className="flex items-center gap-1 mb-3">
+                <h1 className="text-xl font-bold">My Coincases</h1>
+                <Button size='icon' className='ml-auto' disabled={isFetching} onClick={refetch}>
+                    {isFetching ? <Loader className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
                 </Button>
                 <Button size="icon" onClick={openDrawer}>
                     <Plus className="w-4 h-4" />

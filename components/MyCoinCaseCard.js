@@ -92,7 +92,7 @@ const MyCoinCaseCard = ({ caseId }) => {
           </Avatar>
           <div className='flex flex-col gap-2' >
             <CardTitle >
-              <Link href={`case/${caseId}`} passHref>
+              <Link href={`/case/${caseId}`} passHref>
                 {caseName}
               </Link>
               <Badge variant={isPublic ? "default" : "secondary"} className="ml-2">

@@ -14,37 +14,24 @@ export const metadata = {
 }
 
 // Define the rushiLocal chain
-const rushiLocal = {
+const mintflick = {
     id: 169420,
-    name: 'rushiLocal',
-    network: 'rushiLocal',
+    name: 'mintflick aws',
+    network: 'mintflick aws',
     nativeCurrency: {
         decimals: 18,
-        name: 'RushiLocal',
+        name: 'mintflick aws',
         symbol: 'ETH',
     },
     rpcUrls: {
-        public: { http: ['http://3.6.110.204:8545'] },
-        default: { http: ['http://3.6.110.204:8545'] },
+        public: { http: ['https://chain.mintflick.app'] },
+        default: { http: ['https://chain.mintflick.app'] },
     },
 }
 
-const optimus = {
-    id: 1211,
-    name: 'optimus',
-    network: 'optimus',
-    nativeCurrency: {
-        decimals: 18,
-        name: 'Optimus',
-        symbol: 'ETH',
-    },
-    rpcUrls: {
-        public: { http: ['http://192.168.1.56:8545'] },
-        default: { http: ['http://192.168.1.56:8545'] },
-    },
-}
+
 // Create wagmiConfig
-const chains = [mainnet, sepolia, rushiLocal, optimus, polygon]
+const chains = [mainnet, sepolia, mintflick, polygon]
 
 export const config = defaultWagmiConfig({
     chains,

@@ -1,13 +1,18 @@
 'use client'
 import React from 'react';
+import { useTransactionCount } from 'wagmi';
 
-function TransactionHistoryTable() {
+function TransactionHistoryTable({ caseId }) {
     // Mock transaction history data (replace this with actual data fetching logic)
     const transactions = [
         { timestamp: (1726049573890), hash: '0x1234567890abcdef1234567890abcdef12345678', amount: 1000, type: 'buy' },
         { timestamp: (1725876773890), hash: '0xabcdef1234567890abcdef1234567890abcdef12', amount: 500, type: 'sell' },
         { timestamp: (1725703973890), hash: '0x90abcdef1234567890abcdef1234567890abcdef', amount: 750, type: 'buy' },
     ];
+    const result = useTransactionCount({
+        address: caseId,
+    })
+    console.log(result)
 
     return (
         <div className="overflow-x-auto border rounded-lg">
