@@ -47,6 +47,7 @@ const Coin = ({ asset, assets, index, removeAsset, setAssets, token }) => {
                     placeholder={asset.weightage}
                     onChange={(e) => {
                         setWeightage(e.target.value);
+
                     }}
                     className='!w-[70px]'
                 />
@@ -63,6 +64,7 @@ const Coin = ({ asset, assets, index, removeAsset, setAssets, token }) => {
                                 setAssets(prev => prev.map((a, i) =>
                                     i === index ? { ...a, weightage: weightage } : a
                                 ));
+                                setWeightage(null);
                             }}
                             variant='ghost'
                             className='rounded-full'

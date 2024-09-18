@@ -21,8 +21,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import EditCaseComponent from '@/components/EditCaseComponent';
 import RebalanceCard from '@/components/RebalanceCard';
-
-
+import WithdrawFundsButton from '@/components/WithdrawFundsButton';
+import UpgradeToPublicButton from '@/components/UpgradeToPublicButton';
 
 export default function CaseDetails() {
     const router = useRouter();
@@ -33,26 +33,30 @@ export default function CaseDetails() {
     const [prevWeights, setPrevWeights] = useState(null);
     const [data, setData] = useState(null);
     const [weightsChanged, setWeightsChanged] = useState(false);
+    const [isCreator, setIsCreator] = useState(false);
+
     const { data: caseData, isError, isLoading, isFetching, Error, refetch } = useReadContract({
         address: params.caseId,
         abi: caseAbi,
         account: address,
         functionName: 'getCaseInfo',
     });
+
     const { data: caseHoldingWallet, isError: isCaseHoldingWalletError, isLoading: isCaseHoldingWalletLoading, Error: caseHoldingWalletError } = useReadContract({
         address: caseFactoryAddress,
         abi: abi,
         functionName: 'userWallets',
         args: [address],
-
     });
+
     useEffect(() => {
         if (caseData) {
             console.log(caseData)
             const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionsAmount, isPublic, invested] = caseData;
-            setData({ caseName: caseName, caseOwner: caseOwner, tokens: tokens, weights: weights, isPublic: isPublic, invested: invested, paymentToken: paymentToken });
+            setData({ caseName, caseOwner, tokens, weights, isPublic, invested, paymentToken });
+            setIsCreator(caseOwner.toLowerCase() === address.toLowerCase());
         }
-    }, [caseData]);
+    }, [caseData, address]);
 
     useEffect(() => {
         if (prevWeights && data?.weights) {
@@ -63,7 +67,7 @@ export default function CaseDetails() {
         }
     }, [prevWeights, data?.weights])
 
-    const isSubscribed = true
+    const isSubscribed = true;
     const volatility = mockCases[0].volatility;
     const description = mockCases[0].description;
     const creator = mockCases[0].creator;
@@ -71,7 +75,6 @@ export default function CaseDetails() {
     const subscribers = mockCases[0].subscribers;
     const currentInvestment = mockCases[0].invested;
     const minimumInvestment = 1;
-
 
     const handleSubscribe = () => {
         console.log("subscribe");
@@ -82,8 +85,8 @@ export default function CaseDetails() {
         setIsDrawerOpen(false);
     };
 
-    return (
-        isFetching ? <div className="p-3 space-y-4">
+    if (isFetching) {
+        return <div className="p-3 space-y-4">
             <div className="flex items-center justify-between ">
                 <Skeleton className="w-1/3 h-8" />
                 <Skeleton className="w-20 h-6" />
@@ -102,134 +105,134 @@ export default function CaseDetails() {
                 <Skeleton className="w-full h-24" />
             </div>
             <Skeleton className="h-[200px] w-full" />
-        </div>
-            :
-            isError ? <div>Error</div> :
-                !data ? <div>No data</div> :
-                    <>
+        </div>;
+    }
 
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.back()}
-                            className="flex items-center -ml-3"
-                        >
-                            <ChevronLeft className="w-4 h-4 mr-2 -ml-2" />
-                            Back
-                        </Button>
+    if (isError) return <div>Error</div>;
+    if (!data) return <div>No data</div>;
 
-                        <div className="container mx-auto">
-                            <div className="flex flex-col items-start justify-between mb-6 md:flex-row">
-                                <div className="flex flex-col w-full gap-2">
-                                    <div className="flex items-center w-full gap-2 ">
-                                        <span className="text-xl font-bold ">{data.caseName}</span>
-                                        <Badge variant={data.isPublic ? "default" : "secondary"} className="ml-2">
-                                            {data.isPublic ? "Public" : "Private"}
-                                        </Badge>
-                                        <Button className='ml-auto' variant="ghost" size="icon" onClick={() => setIsDrawerOpen(true)}>
-                                            <Pencil className="w-4 h-4" />
-                                        </Button>
-                                        {/* {isSubscribed && (
-                            <Badge variant="secondary" className="text-green-500 bg-green-500/20 hover:bg-green-600">
-                                Subscribed
+    return (
+        <>
+            <Button
+                variant="ghost"
+                onClick={() => router.back()}
+                className="flex items-center -ml-3"
+            >
+                <ChevronLeft className="w-4 h-4 mr-2 -ml-2" />
+                Back
+            </Button>
+
+            <div className="container mx-auto">
+                <div className="flex flex-col items-start justify-between mb-6 md:flex-row">
+                    <div className="flex flex-col w-full gap-2">
+                        <div className="flex items-center w-full gap-2 ">
+                            <span className="text-xl font-bold ">{data.caseName}</span>
+                            <Badge variant={data.isPublic ? "default" : "secondary"} className="ml-2">
+                                {data.isPublic ? "Public" : "Private"}
                             </Badge>
-                        )} */}
-                                        {/* <VolatilityBadge volatility={volatility} /> */}
-
-                                    </div>
-                                    {/* <p className="mb-4 text-lg">{description}</p> */}
-                                    <div className="flex items-center">
-                                        <Avatar className="w-12 h-12 mr-4">
-                                            <AvatarImage src={creator.avatar} alt={creator.name} />
-                                            <AvatarFallback>{creator.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                        <div className='flex flex-col'>
-                                            <span className="font-semibold text-l">{`${data.caseOwner.slice(0, 6)}...${data.caseOwner.slice(-4)}`}</span>
-                                            <span className='text-xs text-muted-foreground'>
-                                                Creator of this case {data.caseOwner == address ? "( You ) " : ""}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div className='grid grid-cols-1 gap-4 mb-2 md:grid-cols-2'>
-                                <Card>
-                                    <CardHeader className='p-3'>
-                                        <CardTitle className=''>
-                                            <span className='text-primary'>Total Investment</span>
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className='p-3 pt-0 text-2xl font-bold'>
-                                        {/* <span className={`text-sm font-semibold ${returns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {returns >= 0 ? '+' : ''}{returns}%
-                        </span> */}
-                                        ${totalInvestment ? `${Object.values(totalInvestment).reduce((acc, curr) => acc + curr, 0).toFixed(2)}` : 0}
-
-                                    </CardContent>
-                                </Card>
-
-                                {isSubscribed ? (
-                                    weightsChanged && totalInvestment ? <RebalanceCard caseId={params.caseId} caseWalletAddress={caseHoldingWallet} /> :
-                                        <InvestmentCard
-                                            isFirstTimeInvestor={!totalInvestment}
-                                            currentInvestment={currentInvestment}
-                                            minimumInvestment={minimumInvestment}
-                                            caseId={params.caseId}
-                                            paymentToken={data.paymentToken}
-                                        />
-                                ) : (
-                                    <>
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Minimum Investment</CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <span className="text-2xl font-bold">${minimumInvestment}</span>
-                                            </CardContent>
-                                        </Card>
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Subscription Fee</CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <span className="text-2xl font-bold">${0.001}</span>
-                                            </CardContent>
-                                        </Card>
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Subscribe</CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <SubscribeDrawer caseData={params.caseId} onSubscribe={handleSubscribe} />
-                                            </CardContent>
-                                        </Card>
-                                    </>
-                                )}
-
-                            </div>
-
-                            {isSubscribed && (
-                                <>
-                                    <h2 className="px-4 mt-4 mb-2 font-bold ">Assets in this Case</h2>
-                                    <CaseAssetTable weights={data.weights} assets={data.tokens} caseId={params.caseId} setTotalInvestment={setTotalInvestment} setPrevWeights={setPrevWeights} caseHoldingWallet={caseHoldingWallet} />
-
-                                    {/* <h2 className="mt-8 mb-4 text-xl font-bold">Transaction History</h2> */}
-                                    {/* <TransactionHistoryTable caseId={params.caseId} /> */}
-                                    {/* <FetchLogs caseId={params.caseId} /> */}
-                                </>
+                            {isCreator && (
+                                <Button className='ml-auto' variant="ghost" size="icon" onClick={() => setIsDrawerOpen(true)}>
+                                    <Pencil className="w-4 h-4" />
+                                </Button>
                             )}
                         </div>
-                        <Drawer open={isDrawerOpen} onClose={closeDrawer}>
-                            <DrawerContent className="w-full max-w-lg p-3 mx-auto">
-                                <EditCaseComponent
+                        <div className="flex items-center">
+                            <Avatar className="w-12 h-12 mr-4">
+                                <AvatarImage src={creator.avatar} alt={creator.name} />
+                                <AvatarFallback>{creator.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className='flex flex-col'>
+                                <span className="font-semibold text-l">{`${data.caseOwner.slice(0, 6)}...${data.caseOwner.slice(-4)}`}</span>
+                                <span className='text-xs text-muted-foreground'>
+                                    Creator of this case {isCreator ? "( You )" : ""}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='grid grid-cols-1 gap-4 mb-4 md:grid-cols-2'>
+                    <Card>
+                        <CardHeader className='p-3'>
+                            <CardTitle className=''>
+                                <span className='text-primary'>Total Investment</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className='p-3 pt-0 text-2xl font-bold'>
+                            ${totalInvestment ? `${Object.values(totalInvestment).reduce((acc, curr) => acc + curr, 0).toFixed(2)}` : 0}
+                        </CardContent>
+                    </Card>
+
+                    {isSubscribed ? (
+                        weightsChanged && totalInvestment ? <RebalanceCard caseId={params.caseId} caseWalletAddress={caseHoldingWallet} /> :
+                            <InvestmentCard
+                                isFirstTimeInvestor={!totalInvestment}
+                                currentInvestment={currentInvestment}
+                                minimumInvestment={minimumInvestment}
+                                caseId={params.caseId}
+                                paymentToken={data.paymentToken}
+                            />
+                    ) : (
+                        <>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Minimum Investment</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <span className="text-2xl font-bold">${minimumInvestment}</span>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Subscription Fee</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <span className="text-2xl font-bold">${0.001}</span>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Subscribe</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <SubscribeDrawer caseData={params.caseId} onSubscribe={handleSubscribe} />
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+                </div>
+
+                {isSubscribed && (
+                    <>
+                        <div className='flex items-center justify-between'>
+                            <h2 className="px-4 mt-4 mb-2 font-bold ">Assets in this Case </h2>
+                            <div className="space-x-2">
+                                <WithdrawFundsButton
                                     caseId={params.caseId}
-                                    currentTokens={data.tokens}
-                                    currentWeights={data.weights}
-                                    onClose={closeDrawer}
+                                    caseWalletAddress={caseHoldingWallet}
                                 />
-                            </DrawerContent>
-                        </Drawer>
+                                {isCreator && !data.isPublic && (
+                                    <UpgradeToPublicButton caseId={params.caseId} />
+                                )}
+                            </div>
+                        </div>
+                        <CaseAssetTable weights={data.weights} assets={data.tokens} caseId={params.caseId} setTotalInvestment={setTotalInvestment} setPrevWeights={setPrevWeights} caseHoldingWallet={caseHoldingWallet} />
                     </>
+                )}
+            </div>
+
+            {isCreator && (
+                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                    <DrawerContent className="w-full max-w-md p-3 mx-auto">
+                        <EditCaseComponent
+                            caseId={params.caseId}
+                            currentTokens={data.tokens}
+                            currentWeights={data.weights}
+                            onClose={closeDrawer}
+                        />
+                    </DrawerContent>
+                </Drawer>
+            )}
+        </>
     );
 }

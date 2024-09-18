@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { mockCases } from '@/constants/mockData';
 import { Button } from "@/components/ui/button";
 import { SparklesIcon } from "lucide-react";
+import CreatorsList from "@/components/CreatorsList";
 
 export default function DiscoverPage() {
     const { watchlist, toggleWatchlist } = useWatchlist();
@@ -32,7 +33,7 @@ export default function DiscoverPage() {
                 </Button>
                 {/* <FilterOptions /> */}
             </div>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            {/* <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {mockCases.map((caseData) => (
                     <CaseCard
                         key={caseData.id}
@@ -41,7 +42,8 @@ export default function DiscoverPage() {
                         isWatchlisted={watchlist.includes(caseData.id)}
                     />
                 ))}
-            </div>
+            </div> */}
+            <CreatorsList />
         </>
     )
 }

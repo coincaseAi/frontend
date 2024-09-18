@@ -124,9 +124,9 @@ const MyCoinCaseCard = ({ caseId }) => {
             </CardDescription>
             {/* <CardDescription>{dummyData.description}</CardDescription> */}
           </div>
-          <div className="flex items-center w-20 h-10 ml-auto">
+          {/* <div className="flex items-center w-20 h-10 ml-auto">
             <Line data={lineData} options={lineOptions} />
-          </div>
+          </div> */}
         </div>
       </CardHeader>
       {/* <CardContent className="p-3">
