@@ -90,7 +90,7 @@ const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTo
     )
 }
 
-function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWeights, caseHoldingWallet, isSubscribed }) {
+function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWeights, caseHoldingWallet, showDetails }) {
     const { address } = useAccount();
 
 
@@ -117,8 +117,8 @@ function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWe
                             <tr>
                                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Name</th>
 
-                                {isSubscribed && <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Quantity</th>}
-                                {isSubscribed && <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Weight</th>}
+                                {showDetails && <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Quantity</th>}
+                                {showDetails && <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Weight</th>}
                                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Rate (USD)</th>
 
                                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Value (USD)</th>
@@ -128,7 +128,7 @@ function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWe
                             {assets.map((coin, index) => {
                                 const asset = availableTokens.find(token => token.address === coin);
                                 return (
-                                    <AssetRow isSubscriptionActive={isSubscribed} weights={weights} caseAddress={caseId} asset={asset} caseHoldingWallet={caseHoldingWallet} key={index} index={index} setTotalInvestment={setTotalInvestment} />
+                                    <AssetRow isSubscriptionActive={showDetails} weights={weights} caseAddress={caseId} asset={asset} caseHoldingWallet={caseHoldingWallet} key={index} index={index} setTotalInvestment={setTotalInvestment} />
                                 )
                             })}
                         </tbody>

@@ -140,21 +140,19 @@ export default function CaseDetails() {
                         </Card>
                     )}
 
-                    {isSubscribed ? (
+                    {
                         weightsChanged && totalInvestment ? (
                             <RebalanceCard caseId={params.caseId} caseWalletAddress={caseHoldingWallet} />
                         ) : (
-                            <InvestmentCard
+                            isSubscribed || isCreator ? <InvestmentCard
                                 isFirstTimeInvestor={!totalInvestment}
                                 currentInvestment={totalInvestment}
                                 minimumInvestment={1} // You might want to fetch this from the contract
                                 caseId={params.caseId}
                                 paymentToken={data.paymentToken}
-                            />
+                            /> : <SubscribeCard caseId={params.caseId} />
                         )
-                    ) : (
-                        <SubscribeCard caseId={params.caseId} />
-                    )}
+                    }
                 </div>
 
                 {(isCreator || isSubscribed) && (
@@ -191,7 +189,7 @@ export default function CaseDetails() {
                             weights={data.weights}
                             assets={data.tokens}
                             caseId={params.caseId}
-                            showDetails={false}
+                            showDetails={isCreator || isSubscribed}
                         />
                     </div>
                 )}

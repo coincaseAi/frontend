@@ -20,7 +20,7 @@ export default function DiscoverPage() {
 
     return (
         <>
-            <div className="flex justify-between gap-2 mb-4 ">
+            <div className="flex justify-between gap-2 mb-2 ">
                 <Input
                     type="search"
                     placeholder="Search Coincases"
