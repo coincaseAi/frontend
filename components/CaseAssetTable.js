@@ -10,7 +10,7 @@ import { formatEther, formatUnits, parseEther } from 'viem';
 import { Skeleton } from './ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
-const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTotalInvestment }) => {
+const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTotalInvestment, isSubscriptionActive }) => {
     const [rateInUSDT, setRateInUSDT] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [valueInUSD, setValueInUSD] = useState(0);
@@ -75,11 +75,12 @@ const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTo
                         </div>
 
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {isSubscriptionActive && <td className="px-6 py-4 whitespace-nowrap">
                         {caseHolding ? quantity : '-'}
-                    </td>  <td className="px-6 py-4 whitespace-nowrap">
+                    </td>}
+                    {isSubscriptionActive && <td className="px-6 py-4 whitespace-nowrap">
                         {weights[index] ? Number(weights[index]) : 0}%
-                    </td>
+                    </td>}
                     <td className="px-6 py-4 whitespace-nowrap">
                         ${rateInUSDT}
                     </td>
@@ -89,7 +90,7 @@ const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTo
     )
 }
 
-function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWeights, caseHoldingWallet }) {
+function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWeights, caseHoldingWallet, isSubscribed }) {
     const { address } = useAccount();
 
 
@@ -115,8 +116,9 @@ function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWe
                         <thead className="bg-foreground/10">
                             <tr>
                                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Name</th>
-                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Quantity</th>
-                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Weight</th>
+
+                                {isSubscribed && <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Quantity</th>}
+                                {isSubscribed && <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Weight</th>}
                                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Rate (USD)</th>
 
                                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase">Value (USD)</th>
@@ -126,7 +128,7 @@ function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWe
                             {assets.map((coin, index) => {
                                 const asset = availableTokens.find(token => token.address === coin);
                                 return (
-                                    <AssetRow weights={weights} caseAddress={caseId} asset={asset} caseHoldingWallet={caseHoldingWallet} key={index} index={index} setTotalInvestment={setTotalInvestment} />
+                                    <AssetRow isSubscriptionActive={isSubscribed} weights={weights} caseAddress={caseId} asset={asset} caseHoldingWallet={caseHoldingWallet} key={index} index={index} setTotalInvestment={setTotalInvestment} />
                                 )
                             })}
                         </tbody>

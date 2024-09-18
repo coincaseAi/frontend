@@ -1,21 +1,18 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronLeft, Pencil } from 'lucide-react';
+import { ChevronLeft, Pencil } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from 'next/link';
 import CaseAssetTable from '@/components/CaseAssetTable';
-import TransactionHistoryTable from '@/components/TransactionHistoryTable';
-import SubscribeDrawer from '@/components/SubscribeDrawer';
 import InvestmentCard from '@/components/InvestmentCard';
-import VolatilityBadge from '@/components/VolatilityBadge';
-import { useReadContract, useAccount, useWriteContract } from 'wagmi';
+import SubscribeCard from '@/components/SubscribeCard'; // You'll need to create this component
+import { useReadContract, useAccount } from 'wagmi';
 import caseAbi from '@/config/caseAbi.json';
-import { caseFactoryAddress, mockCases } from '@/constants/mockData';
+import { caseFactoryAddress } from '@/constants/mockData';
 import abi from '@/config/abi.json';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
@@ -34,82 +31,61 @@ export default function CaseDetails() {
     const [data, setData] = useState(null);
     const [weightsChanged, setWeightsChanged] = useState(false);
     const [isCreator, setIsCreator] = useState(false);
+    const [isSubscribed, setIsSubscribed] = useState(false);
 
-    const { data: caseData, isError, isLoading, isFetching, Error, refetch } = useReadContract({
+    const { data: caseData, isError, isLoading, isFetching, refetch } = useReadContract({
         address: params.caseId,
         abi: caseAbi,
         account: address,
         functionName: 'getCaseInfo',
     });
 
-    const { data: caseHoldingWallet, isError: isCaseHoldingWalletError, isLoading: isCaseHoldingWalletLoading, Error: caseHoldingWalletError } = useReadContract({
+    const { data: caseHoldingWallet } = useReadContract({
         address: caseFactoryAddress,
         abi: abi,
         functionName: 'userWallets',
         args: [address],
     });
 
+    const { data: subscriptionStatus } = useReadContract({
+        address: params.caseId,
+        abi: caseAbi,
+        functionName: 'isSubscriptionActive',
+        args: [address],
+    });
+
     useEffect(() => {
         if (caseData) {
-            console.log(caseData)
-            const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionsAmount, isPublic, invested] = caseData;
-            setData({ caseName, caseOwner, tokens, weights, isPublic, invested, paymentToken });
+            const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionsAmount, isPublic, subcriptionTime] = caseData;
+            setData({ caseName, caseOwner, tokens, weights, isPublic, subcriptionTime, paymentToken });
             setIsCreator(caseOwner.toLowerCase() === address.toLowerCase());
         }
     }, [caseData, address]);
 
     useEffect(() => {
+        if (subscriptionStatus !== undefined) {
+            setIsSubscribed(subscriptionStatus);
+        }
+    }, [subscriptionStatus]);
+
+    useEffect(() => {
         if (prevWeights && data?.weights) {
             const isChanged = prevWeights.length !== data.weights.length ||
                 prevWeights.some((weight, index) => weight !== data.weights[index]);
-            console.log('Weights changed:', isChanged);
             setWeightsChanged(isChanged);
         }
-    }, [prevWeights, data?.weights])
+    }, [prevWeights, data?.weights]);
 
-    const isSubscribed = true;
-    const volatility = mockCases[0].volatility;
-    const description = mockCases[0].description;
-    const creator = mockCases[0].creator;
-    const returns = mockCases[0].returns;
-    const subscribers = mockCases[0].subscribers;
-    const currentInvestment = mockCases[0].invested;
-    const minimumInvestment = 1;
-
-    const handleSubscribe = () => {
-        console.log("subscribe");
-        setIsDrawerOpen(true);
-    };
-
-    const closeDrawer = () => {
-        setIsDrawerOpen(false);
-    };
+    const closeDrawer = () => setIsDrawerOpen(false);
 
     if (isFetching) {
         return <div className="p-3 space-y-4">
-            <div className="flex items-center justify-between ">
-                <Skeleton className="w-1/3 h-8" />
-                <Skeleton className="w-20 h-6" />
-            </div>
-            <Skeleton className="w-full h-4" />
-            <Skeleton className="w-2/3 h-4" />
-            <div className="flex items-center space-x-4">
-                <Skeleton className="w-12 h-12 rounded-full" />
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-[200px]" />
-                    <Skeleton className="h-4 w-[150px]" />
-                </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Skeleton className="w-full h-24" />
-                <Skeleton className="w-full h-24" />
-            </div>
-            <Skeleton className="h-[200px] w-full" />
+            {/* ... (loading skeleton) ... */}
         </div>;
     }
 
-    if (isError) return <div>Error</div>;
-    if (!data) return <div>No data</div>;
+    if (isError) return <div>Error loading case data</div>;
+    if (!data) return <div>No data available</div>;
 
     return (
         <>
@@ -125,8 +101,8 @@ export default function CaseDetails() {
             <div className="container mx-auto">
                 <div className="flex flex-col items-start justify-between mb-6 md:flex-row">
                     <div className="flex flex-col w-full gap-2">
-                        <div className="flex items-center w-full gap-2 ">
-                            <span className="text-xl font-bold ">{data.caseName}</span>
+                        <div className="flex items-center w-full gap-2">
+                            <span className="text-xl font-bold">{data.caseName}</span>
                             <Badge variant={data.isPublic ? "default" : "secondary"} className="ml-2">
                                 {data.isPublic ? "Public" : "Private"}
                             </Badge>
@@ -138,8 +114,7 @@ export default function CaseDetails() {
                         </div>
                         <div className="flex items-center">
                             <Avatar className="w-12 h-12 mr-4">
-                                <AvatarImage src={creator.avatar} alt={creator.name} />
-                                <AvatarFallback>{creator.name.charAt(0)}</AvatarFallback>
+                                <AvatarFallback>{data.caseName.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className='flex flex-col'>
                                 <span className="font-semibold text-l">{`${data.caseOwner.slice(0, 6)}...${data.caseOwner.slice(-4)}`}</span>
@@ -152,60 +127,40 @@ export default function CaseDetails() {
                 </div>
 
                 <div className='grid grid-cols-1 gap-4 mb-4 md:grid-cols-2'>
-                    <Card>
-                        <CardHeader className='p-3'>
-                            <CardTitle className=''>
-                                <span className='text-primary'>Total Investment</span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className='p-3 pt-0 text-2xl font-bold'>
-                            ${totalInvestment ? `${Object.values(totalInvestment).reduce((acc, curr) => acc + curr, 0).toFixed(2)}` : 0}
-                        </CardContent>
-                    </Card>
+                    {(isCreator || isSubscribed) && (
+                        <Card>
+                            <CardHeader className='p-3'>
+                                <CardTitle className=''>
+                                    <span className='text-primary'>Total Investment</span>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className='p-3 pt-0 text-2xl font-bold'>
+                                ${totalInvestment ? `${Object.values(totalInvestment).reduce((acc, curr) => acc + curr, 0).toFixed(2)}` : 0}
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {isSubscribed ? (
-                        weightsChanged && totalInvestment ? <RebalanceCard caseId={params.caseId} caseWalletAddress={caseHoldingWallet} /> :
+                        weightsChanged && totalInvestment ? (
+                            <RebalanceCard caseId={params.caseId} caseWalletAddress={caseHoldingWallet} />
+                        ) : (
                             <InvestmentCard
                                 isFirstTimeInvestor={!totalInvestment}
-                                currentInvestment={currentInvestment}
-                                minimumInvestment={minimumInvestment}
+                                currentInvestment={totalInvestment}
+                                minimumInvestment={1} // You might want to fetch this from the contract
                                 caseId={params.caseId}
                                 paymentToken={data.paymentToken}
                             />
+                        )
                     ) : (
-                        <>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Minimum Investment</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <span className="text-2xl font-bold">${minimumInvestment}</span>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Subscription Fee</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <span className="text-2xl font-bold">${0.001}</span>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Subscribe</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <SubscribeDrawer caseData={params.caseId} onSubscribe={handleSubscribe} />
-                                </CardContent>
-                            </Card>
-                        </>
+                        <SubscribeCard caseId={params.caseId} />
                     )}
                 </div>
 
-                {isSubscribed && (
+                {(isCreator || isSubscribed) && (
                     <>
                         <div className='flex items-center justify-between'>
-                            <h2 className="px-4 mt-4 mb-2 font-bold ">Assets in this Case </h2>
+                            <h2 className="px-4 mt-4 mb-2 font-bold">Assets in this Case</h2>
                             <div className="space-x-2">
                                 <WithdrawFundsButton
                                     caseId={params.caseId}
@@ -216,8 +171,29 @@ export default function CaseDetails() {
                                 )}
                             </div>
                         </div>
-                        <CaseAssetTable weights={data.weights} assets={data.tokens} caseId={params.caseId} setTotalInvestment={setTotalInvestment} setPrevWeights={setPrevWeights} caseHoldingWallet={caseHoldingWallet} />
+                        <CaseAssetTable
+                            weights={data.weights}
+                            assets={data.tokens}
+                            caseId={params.caseId}
+                            setTotalInvestment={setTotalInvestment}
+                            setPrevWeights={setPrevWeights}
+                            caseHoldingWallet={caseHoldingWallet}
+                            showDetails={isCreator || isSubscribed}
+                        />
                     </>
+                )}
+
+                {!isCreator && !isSubscribed && (
+                    <div className="mt-4">
+                        <h2 className="px-4 mb-2 font-bold">Assets in this Case</h2>
+                        <CaseAssetTable
+                            isSubscribed={isSubscribed}
+                            weights={data.weights}
+                            assets={data.tokens}
+                            caseId={params.caseId}
+                            showDetails={false}
+                        />
+                    </div>
                 )}
             </div>
 
