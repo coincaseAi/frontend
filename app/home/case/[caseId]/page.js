@@ -15,14 +15,13 @@ import InvestmentCard from '@/components/InvestmentCard';
 import VolatilityBadge from '@/components/VolatilityBadge';
 import { useReadContract, useAccount, useWriteContract } from 'wagmi';
 import caseAbi from '@/config/caseAbi.json';
-import { mockCases } from '@/constants/mockData';
-import { EraserIcon } from 'lucide-react';
+import { caseFactoryAddress, mockCases } from '@/constants/mockData';
+import abi from '@/config/abi.json';
 import { Skeleton } from '@/components/ui/skeleton';
-import FetchLogs from '@/components/TransactionsOnCase';
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import EditCaseComponent from '@/components/EditCaseComponent';
+import RebalanceCard from '@/components/RebalanceCard';
 
-const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#36A2EB', '#FFCE56'];
 
 
 export default function CaseDetails() {
@@ -31,20 +30,22 @@ export default function CaseDetails() {
     const { address } = useAccount();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [totalInvestment, setTotalInvestment] = useState(null);
-
+    const [prevWeights, setPrevWeights] = useState(null);
     const [data, setData] = useState(null);
-
+    const [weightsChanged, setWeightsChanged] = useState(false);
     const { data: caseData, isError, isLoading, isFetching, Error, refetch } = useReadContract({
         address: params.caseId,
         abi: caseAbi,
         account: address,
         functionName: 'getCaseInfo',
     });
+    const { data: caseHoldingWallet, isError: isCaseHoldingWalletError, isLoading: isCaseHoldingWalletLoading, Error: caseHoldingWalletError } = useReadContract({
+        address: caseFactoryAddress,
+        abi: abi,
+        functionName: 'userWallets',
+        args: [address],
 
-
-
-
-    // console.log(data)
+    });
     useEffect(() => {
         if (caseData) {
             console.log(caseData)
@@ -52,6 +53,15 @@ export default function CaseDetails() {
             setData({ caseName: caseName, caseOwner: caseOwner, tokens: tokens, weights: weights, isPublic: isPublic, invested: invested, paymentToken: paymentToken });
         }
     }, [caseData]);
+
+    useEffect(() => {
+        if (prevWeights && data?.weights) {
+            const isChanged = prevWeights.length !== data.weights.length ||
+                prevWeights.some((weight, index) => weight !== data.weights[index]);
+            console.log('Weights changed:', isChanged);
+            setWeightsChanged(isChanged);
+        }
+    }, [prevWeights, data?.weights])
 
     const isSubscribed = true
     const volatility = mockCases[0].volatility;
@@ -147,7 +157,7 @@ export default function CaseDetails() {
                                 <Card>
                                     <CardHeader className='p-3'>
                                         <CardTitle className=''>
-                                            <span className='text-muted-foreground'>Total Investment</span>
+                                            <span className='text-primary'>Total Investment</span>
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className='p-3 pt-0 text-2xl font-bold'>
@@ -158,14 +168,16 @@ export default function CaseDetails() {
 
                                     </CardContent>
                                 </Card>
+
                                 {isSubscribed ? (
-                                    <InvestmentCard
-                                        isFirstTimeInvestor={!totalInvestment}
-                                        currentInvestment={currentInvestment}
-                                        minimumInvestment={minimumInvestment}
-                                        caseId={params.caseId}
-                                        paymentToken={data.paymentToken}
-                                    />
+                                    weightsChanged && totalInvestment ? <RebalanceCard caseId={params.caseId} caseWalletAddress={caseHoldingWallet} /> :
+                                        <InvestmentCard
+                                            isFirstTimeInvestor={!totalInvestment}
+                                            currentInvestment={currentInvestment}
+                                            minimumInvestment={minimumInvestment}
+                                            caseId={params.caseId}
+                                            paymentToken={data.paymentToken}
+                                        />
                                 ) : (
                                     <>
                                         <Card>
@@ -200,7 +212,7 @@ export default function CaseDetails() {
                             {isSubscribed && (
                                 <>
                                     <h2 className="px-4 mt-4 mb-2 font-bold ">Assets in this Case</h2>
-                                    <CaseAssetTable weights={data.weights} assets={data.tokens} caseId={params.caseId} setTotalInvestment={setTotalInvestment} />
+                                    <CaseAssetTable weights={data.weights} assets={data.tokens} caseId={params.caseId} setTotalInvestment={setTotalInvestment} setPrevWeights={setPrevWeights} caseHoldingWallet={caseHoldingWallet} />
 
                                     {/* <h2 className="mt-8 mb-4 text-xl font-bold">Transaction History</h2> */}
                                     {/* <TransactionHistoryTable caseId={params.caseId} /> */}
