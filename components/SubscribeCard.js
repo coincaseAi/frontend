@@ -14,6 +14,9 @@ const SubscribeCard = ({ caseId }) => {
                 address: caseId,
                 abi: caseAbi,
                 functionName: 'subscribe',
+                args: [
+                    0
+                ],
                 // Add any necessary arguments here
             });
             toast.success("Successfully subscribed to the case");

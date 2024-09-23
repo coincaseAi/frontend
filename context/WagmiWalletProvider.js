@@ -1,16 +1,29 @@
 'use client'
+// 1. Import modules.
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { WagmiProvider, deserialize, serialize } from 'wagmi'
 
-import React, { ReactNode } from 'react'
 import { config, projectId, metadata } from '@/config/wagmiConfig'
 
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 
-import { State, WagmiProvider } from 'wagmi'
 
 // Setup queryClient
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            gcTime: 1_000 * 60 * 60 * 24, // 24 hours
+        },
+    },
+})
+const persister = createSyncStoragePersister({
+    serialize,
+    storage: window.localStorage,
+    deserialize,
+})
 
 if (!projectId) throw new Error('Project ID is not defined')
 
@@ -27,8 +40,12 @@ export default function AppKitProvider({
     initialState
 }) {
     return (
-        <WagmiProvider config={config} initialState={initialState}>
-            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <WagmiProvider config={config} initialState={initialState} reconnectOnMount={true}>
+            <PersistQueryClientProvider
+                client={queryClient}
+                persistOptions={{ persister }}
+            >{children}
+            </PersistQueryClientProvider>
         </WagmiProvider>
     )
 }

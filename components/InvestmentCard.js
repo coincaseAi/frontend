@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Loader2 } from 'lucide-react';
-import { useWriteContract, useAccount } from 'wagmi';
+import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import caseAbi from '@/config/caseAbi.json';
 import { parseEther } from 'viem';
 import { toast } from 'sonner';
@@ -19,7 +19,7 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
     const [investmentAmount, setInvestmentAmount] = useState('');
     const { address } = useAccount();
 
-    const { status, writeContractAsync } = useWriteContract();
+    const { data: hash, status, writeContractAsync } = useWriteContract();
 
     const handleInvest = async (e) => {
         e.preventDefault();
@@ -53,7 +53,6 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
         }
     };
 
-
     return (
         <Card className="overflow-hidden">
             <CardHeader className='p-3 text-white bg-gradient-to-r from-blue-500 to-purple-500'>
@@ -83,3 +82,4 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
 
     )
 }
+

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useWriteContract, useWaitForTransactionReceipt, useConfig, useReadContract } from 'wagmi';
 import caseAbi from '@/config/caseAbi.json';
+import abi from '@/config/abi.json';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import {
@@ -13,24 +14,32 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer";
+import { caseFactoryAddress } from '@/constants/mockData';
 
 const UpgradeToPublicButton = ({ caseId }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const { writeContractAsync, isPending } = useWriteContract();
+    const { writeContractAsync, isPending, status } = useWriteContract();
+    const { data: creationFee, isLoading: isCreationFeeLoading } = useReadContract({
+        address: caseFactoryAddress,
+        abi: abi,
+        functionName: 'getCreationFee',
+    });
 
     const handleUpgrade = async () => {
         try {
+            console.log(creationFee)
+
             const tx = await writeContractAsync({
                 address: caseId,
                 abi: caseAbi,
                 functionName: 'upgradeToPublic',
+                args: [
+
+                ],
+                value: creationFee
             });
 
-            toast.promise(tx.wait(), {
-                loading: 'Upgrading case to public...',
-                success: 'Case upgraded to public successfully',
-                error: 'Failed to upgrade case to public',
-            });
+
 
             setIsDrawerOpen(false);
         } catch (error) {
@@ -38,7 +47,13 @@ const UpgradeToPublicButton = ({ caseId }) => {
             toast.error(error.message || "An error occurred during the upgrade");
         }
     };
-
+    useEffect(() => {
+        if (status === 'success') {
+            toast.success('Case upgraded to public successfully');
+        } else if (status === 'error') {
+            toast.error('Failed to upgrade case to public');
+        }
+    }, [status]);
     return (
         <>
             <Button size="sm" variant="outline" onClick={() => setIsDrawerOpen(true)}>

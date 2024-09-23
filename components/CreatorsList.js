@@ -1,22 +1,14 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useReadContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { caseFactoryAddress } from '@/constants/mockData';
 import abi from '@/config/abi.json';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import Link from 'next/link';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
-import MyCoinCaseCard from './MyCoinCaseCard';
+import CaseCard from './CaseCard';
 
 const CreatorsList = () => {
     const [creators, setCreators] = useState([]);
+    const { address } = useAccount()
 
     const { data: creatorsData, isError, isLoading } = useReadContract({
         address: caseFactoryAddress,
@@ -27,6 +19,7 @@ const CreatorsList = () => {
     useEffect(() => {
         if (creatorsData) {
             setCreators(creatorsData);
+            console.log(creatorsData)
         }
     }, [creatorsData]);
 
@@ -56,7 +49,7 @@ const CreatorsList = () => {
         ) : (
 
             creators.map((creator, index) => (
-                <div key={creator} className="flex flex-col gap-2">
+                address !== creator ? <div key={creator} className="flex flex-col gap-2">
                     {/* <div className="hover:no-underline">
                         <div className="flex items-center space-x-4">
                             <Avatar>
@@ -73,7 +66,7 @@ const CreatorsList = () => {
                     <div> */}
                     <CreatorCases creatorAddress={creator} />
                     {/* </div> */}
-                </div>
+                </div> : null
             ))
 
         )
@@ -105,13 +98,13 @@ const CreatorCases = ({ creatorAddress }) => {
                 <p>No cases created</p>
             ) : (
                 cases.map((caseAddress, index) => (
-                    <Link href={`/home/case/${caseAddress}`} key={caseAddress}>
+                    <div key={caseAddress}>
                         {/* <p className="font-medium">Case #{index + 1}</p>
                         <p className="text-sm text-muted-foreground">{`${caseAddress.slice(0, 6)}...${caseAddress.slice(-4)}`}</p> */}
-                        <div className='pointer-events-none'>
-                            <MyCoinCaseCard caseId={caseAddress} key={caseAddress} />
-                        </div>
-                    </Link>
+
+                        <CaseCard caseId={caseAddress} key={caseAddress} />
+
+                    </div>
 
                 ))
             )}
