@@ -52,19 +52,19 @@ const CaseCard = ({ caseId }) => {
 
 
   return (
-    caseOwner === address || isPublic ? <Card className="relative">
+    caseOwner === address || isPublic ? <Card className="relative rounded-none border-muted">
       <CardHeader className="flex flex-row items-center justify-between p-2 space-y-0 ">
         <div className="flex items-center w-full gap-4">
-          <Avatar className="w-12 h-12 rounded">
-            <AvatarImage src={''} alt={caseName} className="rounded" />
-            <AvatarFallback className="rounded">{caseName.charAt(0)}</AvatarFallback>
+          <Avatar className="w-12 h-12 rounded-none">
+            <AvatarImage src={''} alt={caseName} className="rounded-none" />
+            <AvatarFallback className="rounded-none">{caseName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className='flex flex-col gap-2' >
             <CardTitle >
-              <Link href={`case/${caseId}`} passHref>
+              <Link href={`case/${caseId}`} passHref className='font-medium '>
                 {caseName}
               </Link>
-              {isPublic && <Badge variant={"secondary"} className="absolute text-green-500 bg-green-500/10 top-1 right-1 ">
+              {isPublic && <Badge variant={"secondary"} className="absolute text-green-500 rounded-none bg-green-500/10 top-1 right-1 ">
                 Free Access
               </Badge>}
             </CardTitle>
@@ -123,7 +123,7 @@ const CaseCard = ({ caseId }) => {
       <CardFooter className="flex justify-between p-2">
 
       </CardFooter> */}
-    </Card> : <></>
+    </Card> : null
   );
 };
 

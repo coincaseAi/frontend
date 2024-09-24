@@ -20,6 +20,7 @@ import EditCaseComponent from '@/components/EditCaseComponent';
 import RebalanceCard from '@/components/RebalanceCard';
 import WithdrawFundsButton from '@/components/WithdrawFundsButton';
 import UpgradeToPublicButton from '@/components/UpgradeToPublicButton';
+import GradientAvatar from '@/components/GradientAvatar';
 
 export default function CaseDetails() {
     const router = useRouter();
@@ -55,10 +56,10 @@ export default function CaseDetails() {
     });
 
     useEffect(() => {
-        if (caseData) {
+        if (caseData && address) {
             const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionsAmount, isPublic, subcriptionTime] = caseData;
             setData({ caseName, caseOwner, tokens, weights, isPublic, subcriptionTime, paymentToken });
-            setIsCreator(caseOwner.toLowerCase() === address.toLowerCase());
+            setIsCreator(caseOwner.toLowerCase() === address?.toLowerCase());
         }
     }, [caseData, address]);
 
@@ -112,10 +113,8 @@ export default function CaseDetails() {
                                 </Button>
                             )}
                         </div>
-                        <div className="flex items-center">
-                            <Avatar className="w-12 h-12 mr-4">
-                                <AvatarFallback>{data.caseName.charAt(0)}</AvatarFallback>
-                            </Avatar>
+                        <div className="flex items-center gap-2 ">
+                            <GradientAvatar address={data.caseOwner} size={40} />
                             <div className='flex flex-col'>
                                 <span className="font-semibold text-l">{`${data.caseOwner.slice(0, 6)}...${data.caseOwner.slice(-4)}`}</span>
                                 <span className='text-xs text-muted-foreground'>

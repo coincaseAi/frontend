@@ -145,45 +145,6 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "LIQUIDITY_THRESHOLD",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LIQUIDITY_THRESHOLD_ETH",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "caseImplementation",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -239,6 +200,88 @@
     "name": "createCase",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getOrCreateWallet",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "walletAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_newFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCreationFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newUniswapRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newFeeCollector",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newUniswapFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newCaseImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newWalletImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "updateAddresses",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  },
+  {
+    "inputs": [],
+    "name": "caseImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -300,22 +343,42 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getOrCreateWallet",
+    "inputs": [],
+    "name": "getFeeCollector",
     "outputs": [
       {
         "internalType": "address",
-        "name": "walletAddress",
+        "name": "",
         "type": "address"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "LIQUIDITY_THRESHOLD",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "LIQUIDITY_THRESHOLD_ETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -329,19 +392,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_newFee",
-        "type": "uint256"
-      }
-    ],
-    "name": "setCreationFee",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -368,39 +418,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newUniswapRouter",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_newFeeCollector",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_newUniswapFactory",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_newCaseImplementation",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_newWalletImplementation",
-        "type": "address"
-      }
-    ],
-    "name": "updateAddresses",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -434,9 +451,5 @@
     ],
     "stateMutability": "view",
     "type": "function"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
   }
 ]

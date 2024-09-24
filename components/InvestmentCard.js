@@ -19,7 +19,8 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
     const [investmentAmount, setInvestmentAmount] = useState('');
     const { address } = useAccount();
 
-    const { data: hash, status, writeContractAsync } = useWriteContract();
+    const { data: hash, error, status, writeContract, } = useWriteContract();
+
 
     const handleInvest = async (e) => {
         e.preventDefault();
@@ -33,7 +34,7 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
         }
 
         try {
-            const tx = await writeContractAsync({
+            writeContract({
                 address: caseId,
                 abi: caseAbi,
                 functionName: 'buyTokens',
@@ -43,15 +44,24 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
                 account: address,
                 value: parseEther(investmentAmount) // Adjust the value as needed
             });
-            console.log("Investment transaction:", tx);
-            toast.success("Investment successful!");
-            // Optionally, you can refetch the case details after a successful investment
+
 
         } catch (error) {
             console.log(error);
             toast.error(error.message.toString().split('.')[0]);
         }
     };
+
+    useEffect(() => {
+
+        if (status === 'success') {
+            toast.success('Investment successful');
+        }
+        if (status === 'error') {
+            toast.error(error.message.toString().split('.')[0]);
+        }
+
+    }, [status, error]);
 
     return (
         <Card className="overflow-hidden">
@@ -73,7 +83,7 @@ export default function InvestmentCard({ isFirstTimeInvestor, minimumInvestment,
                         onChange={(e) => setInvestmentAmount(e.target.value)}
                         placeholder={`Min ${minimumInvestment} ${token?.symbol}`}
                     />
-                    <Button onClick={handleInvest} size={status === 'pending' ? 'icon' : 'default'} disabled={status === 'pending'}>
+                    <Button onClick={handleInvest} size={status === 'pending' || status === 'confirmed' ? 'icon' : 'default'} disabled={status === 'pending' || status === 'confirmed'}>
                         {status === 'pending' ? <Loader2 className="w-4 h-4 animate-spin" /> : isFirstTimeInvestor ? "Invest Now" : "Invest More"}
                     </Button>
                 </div>

@@ -83,19 +83,19 @@ const MyCoinCaseCard = ({ caseId }) => {
   };
 
   return (
-    caseOwner === address || isPublic ? <Card className="relative">
+    caseOwner === address || isPublic ? <Card className="relative rounded-none">
       <CardHeader className="flex flex-row items-center justify-between p-2 space-y-0 ">
         <div className="flex items-center w-full gap-4">
-          <Avatar className="w-12 h-12 rounded">
-            <AvatarImage src={dummyData.avatar} alt={caseName} className="rounded" />
-            <AvatarFallback className="rounded">{caseName.charAt(0)}</AvatarFallback>
+          <Avatar className="w-12 h-12 rounded-none">
+            <AvatarImage src={dummyData.avatar} alt={caseName} className="rounded-none" />
+            <AvatarFallback className="rounded-none">{caseName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className='flex flex-col gap-2' >
             <CardTitle >
               <Link href={`case/${caseId}`} passHref>
                 {caseName}
               </Link>
-              <Badge variant={isPublic ? "default" : "secondary"} className="absolute top-1 right-1 ">
+              <Badge variant={isPublic ? "default" : "secondary"} className="absolute rounded-none top-1 right-1 ">
                 {isPublic ? "Public" : "Private"}
               </Badge>
             </CardTitle>
@@ -154,7 +154,7 @@ const MyCoinCaseCard = ({ caseId }) => {
       <CardFooter className="flex justify-between p-2">
 
       </CardFooter> */}
-    </Card> : <></>
+    </Card> : null
   );
 };
 

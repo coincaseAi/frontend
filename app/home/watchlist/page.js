@@ -16,22 +16,11 @@ export default function WatchlistPage() {
     const watchlistedCases = mockCases.filter(caseData => watchlist.includes(caseData.id));
 
     return (
-        <div>
-            <h1 className="mb-4 text-2xl font-bold">Your Watchlist</h1>
-            {watchlistedCases.length === 0 ? (
-                <p>You haven't added any cases to your watchlist yet.</p>
-            ) : (
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                    {watchlistedCases.map((caseData) => (
-                        <CaseCard
-                            key={caseData.id}
-                            caseData={caseData}
-                            onToggleWatchlist={() => handleToggleWatchlist(caseData.id)}
-                            isWatchlisted={true}
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
+        <>
+            <div className="flex flex-col gap-0.5 mb-4">
+                <h1 className="font-serif text-2xl font-semibold">Watchlist</h1>
+                <p className="text-sm text-muted">View your watchlist cases , you can remove them anytime</p>
+            </div>
+        </>
     )
 }

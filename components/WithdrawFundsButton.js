@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import caseWalletAbi from '@/config/caseWalletAbi.json';
@@ -16,7 +16,7 @@ import {
 
 const WithdrawFundsButton = ({ caseId, caseWalletAddress }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const { writeContractAsync, isPending } = useWriteContract();
+    const { writeContractAsync, isPending, isSuccess, isError, error } = useWriteContract();
 
     const handleWithdraw = async () => {
         try {
@@ -27,11 +27,6 @@ const WithdrawFundsButton = ({ caseId, caseWalletAddress }) => {
                 args: [caseId],
             });
 
-            toast.promise(tx.wait(), {
-                loading: 'Withdrawing funds...',
-                success: 'Funds withdrawn successfully',
-                error: 'Failed to withdraw funds',
-            });
 
             setIsDrawerOpen(false);
         } catch (error) {
@@ -39,6 +34,15 @@ const WithdrawFundsButton = ({ caseId, caseWalletAddress }) => {
             toast.error(error.message || "An error occurred during withdrawal");
         }
     };
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success('Funds withdrawn successfully');
+        }
+        if (isError) {
+            toast.error(error.message || "An error occurred during withdrawal");
+        }
+    }, [isSuccess, isError, error]);
 
     return (
         <>

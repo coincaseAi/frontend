@@ -33,7 +33,7 @@ export default function MyCoincasesPage() {
     const skeletons = useMemo(() => (
         <>
             {[...Array(4)].map((_, index) => (
-                <Skeleton key={index} className="h-[64px] w-full rounded-lg" />
+                <Skeleton key={index} className="h-[64px] w-full rounded-none" />
             ))}
         </>
     ), []);
@@ -48,9 +48,14 @@ export default function MyCoincasesPage() {
     ), [userCases]);
 
     return (
-        <div className="container mx-auto">
-            <div className="flex items-center gap-1 mb-3">
-                <h1 className="text-xl font-bold">My Coincases</h1>
+        <>
+
+
+            <div className="flex gap-1 mb-3">
+                <div className="flex flex-col gap-0.5 mb-4">
+                    <h1 className="font-serif text-2xl font-semibold">My Cases</h1>
+                    <p className="text-sm text-muted">View your cases</p>
+                </div>
                 <Button size='icon' className='ml-auto' disabled={isFetching} onClick={refetch}>
                     {isFetching ? <Loader className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
                 </Button>
@@ -59,13 +64,17 @@ export default function MyCoincasesPage() {
                 </Button>
             </div>
 
-            <CreateCaseDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                {isFetching ? skeletons :
-                    isError ? <div>Error fetching user cases</div> :
-                        userCases?.length ? caseCards :
-                            <div>No cases found</div>}
-            </div>
-        </div>
+
+            <div className="container mx-auto">
+
+
+                <CreateCaseDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                    {isFetching ? skeletons :
+                        isError ? <div>Error fetching user cases</div> :
+                            userCases?.length ? caseCards :
+                                <div>No cases found</div>}
+                </div>
+            </div> </>
     );
 }

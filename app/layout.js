@@ -1,7 +1,7 @@
 
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { Poppins } from 'next/font/google';
+import { Poppins, Pridi } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import dynamic from 'next/dynamic';
 import NextTopLoader from "nextjs-toploader";
@@ -17,11 +17,17 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
+const pridi = Pridi({
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700'],
+  variable: '--font-pridi',
+});
+
 export default function RootLayout({ children }) {
 
 
   return (
-    <html lang="en" suppressHydrationWarning className={poppins.variable}>
+    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${pridi.variable}`}>
       <body >
         <WagmiWalletProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
