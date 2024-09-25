@@ -107,7 +107,7 @@ const MyCoinCaseCard = ({ caseId }) => {
   return caseOwner === address || isPublic ? (
     <div
       onClick={() => router.push(`case-details/${caseId}`)}
-      className='relative p-1 border cursor-pointer rounded-xl border-white/20 hover:bg-muted/40 '
+      className='relative p-1 border cursor-pointer rounded-xl border-white/10 hover:bg-muted/40 '
     >
       <div className='flex flex-row items-center justify-between p-0 space-y-0 '>
         <div className='flex items-center w-full gap-4'>

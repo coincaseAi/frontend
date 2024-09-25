@@ -57,7 +57,7 @@ const CaseCard = ({ caseId }) => {
 
   if (isLoading || isFetching) {
     return (
-      <div className='relative p-1 border rounded-xl border-white/20'>
+      <div className='relative p-1 border rounded-xl border-white/10'>
         <div className='flex flex-row items-center justify-between p-0 space-y-0'>
           <div className='flex items-center w-full gap-4'>
             <Skeleton className='w-16 h-16 rounded-lg' />
@@ -107,7 +107,7 @@ const CaseCard = ({ caseId }) => {
   return caseOwner === address || isPublic ? (
     <div
       onClick={() => router.push(`case/${caseId}`)}
-      className='relative p-1 border cursor-pointer rounded-xl border-white/20 hover:bg-muted/40'
+      className='relative p-1 border cursor-pointer rounded-xl border-white/10 hover:bg-muted/40'
     >
       <div className='flex flex-row items-center justify-between p-0 space-y-0 '>
         <div className='flex items-center w-full gap-4'>
