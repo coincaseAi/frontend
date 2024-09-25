@@ -18,7 +18,7 @@ export default function WatchlistPage() {
     return (
         <>
             <div className="flex flex-col gap-0.5 mb-4">
-                <h1 className="font-serif text-2xl font-semibold">Watchlist</h1>
+                <h1 className="text-2xl font-semibold ">Watchlist</h1>
                 <p className="text-sm text-muted">View your watchlist cases , you can remove them anytime</p>
             </div>
         </>

@@ -14,20 +14,16 @@ const WagmiWalletProvider = dynamic(
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-poppins',
+
 });
 
-const pridi = Pridi({
-  subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600', '700'],
-  variable: '--font-pridi',
-});
+
 
 export default function RootLayout({ children }) {
 
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${pridi.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${poppins.className}`}>
       <body >
         <WagmiWalletProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

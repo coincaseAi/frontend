@@ -8,7 +8,7 @@ const Footer = () => {
       <div className='container py-8 pr-4 mx-auto pl-7'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
           <div>
-            <h3 className='mb-4 font-serif font-medium'>About Coincase</h3>
+            <h3 className='mb-4 font-medium'>About Coincase</h3>
             <p className='text-xs text-muted-foreground'>
               Coincase is a leading platform for investing in cryptocurrencies.
               We make it easy for you to buy, sell, and manage your digital
@@ -16,7 +16,7 @@ const Footer = () => {
             </p>
           </div>
           <div>
-            <h3 className='mb-4 font-serif font-medium'>Quick Links</h3>
+            <h3 className='mb-4 font-medium'>Quick Links</h3>
             <ul className='space-y-2 text-xs'>
               <li>
                 <Link href='/home' className='text-muted-foreground hover:underline hover:text-primary'>
@@ -41,7 +41,7 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className='mb-4 font-serif font-medium'>Contact Us</h3>
+            <h3 className='mb-4 font-medium'>Contact Us</h3>
             <address className='text-xs not-italic text-muted-foreground'>
               123 Crypto Street
               <br />

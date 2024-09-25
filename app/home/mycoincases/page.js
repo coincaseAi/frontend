@@ -33,7 +33,7 @@ export default function MyCoincasesPage() {
     const skeletons = useMemo(() => (
         <>
             {[...Array(4)].map((_, index) => (
-                <Skeleton key={index} className="h-[64px] w-full rounded-none" />
+                <Skeleton key={index} className="h-[64px] w-full " />
             ))}
         </>
     ), []);
@@ -53,7 +53,7 @@ export default function MyCoincasesPage() {
 
             <div className="flex gap-1 mb-3">
                 <div className="flex flex-col gap-0.5 mb-4">
-                    <h1 className="font-serif text-2xl font-semibold">My Cases</h1>
+                    <h1 className="text-2xl font-semibold ">My Cases</h1>
                     <p className="text-sm text-muted">View your cases</p>
                 </div>
                 <Button size='icon' className='ml-auto' disabled={isFetching} onClick={refetch}>

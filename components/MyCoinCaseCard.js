@@ -83,19 +83,19 @@ const MyCoinCaseCard = ({ caseId }) => {
   };
 
   return (
-    caseOwner === address || isPublic ? <Card className="relative rounded-none">
-      <CardHeader className="flex flex-row items-center justify-between p-2 space-y-0 ">
+    caseOwner === address || isPublic ? <Card className="relative border-transparent hover:border-muted">
+      <CardHeader className="flex flex-row items-center justify-between p-0 space-y-0 ">
         <div className="flex items-center w-full gap-4">
-          <Avatar className="w-12 h-12 rounded-none">
-            <AvatarImage src={dummyData.avatar} alt={caseName} className="rounded-none" />
-            <AvatarFallback className="rounded-none">{caseName.charAt(0)}</AvatarFallback>
+          <Avatar className="w-16 h-16 rounded-lg">
+            <AvatarImage src={dummyData.avatar} alt={caseName} className="rounded-lg" />
+            <AvatarFallback className="rounded-lg">{caseName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className='flex flex-col gap-2' >
             <CardTitle >
               <Link href={`case/${caseId}`} passHref>
                 {caseName}
               </Link>
-              <Badge variant={isPublic ? "default" : "secondary"} className="absolute rounded-none top-1 right-1 ">
+              <Badge variant={isPublic ? "default" : "secondary"} className="absolute text-white top-1 right-1 ">
                 {isPublic ? "Public" : "Private"}
               </Badge>
             </CardTitle>

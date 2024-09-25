@@ -27,17 +27,17 @@ function Header() {
     return (
         <header className="">
             <div className="container flex items-center justify-between gap-1 py-4 pr-4 mx-auto pl-7">
-                {/* <div className="font-serif text-xl font-bold text-primary">Coincase</div> */}
-                {address && <GradientAvatar address={address} size={36} />}
+
+                {address ? <GradientAvatar address={address} size={36} /> : <div className="text-xl font-bold text-primary">Coincase</div>}
                 {/* <w3m-button /> */}
                 <ConnectWallet />
             </div>
             {/* bottom nav */}
-            <nav className="fixed bottom-0 left-0 z-50 w-full py-4 mx-auto overflow-x-auto bg-background scrollbar-none" style={{
-                borderTop: '1px solid transparent',
+            <nav className="fixed bottom-0 left-0 z-50 w-full py-4 mx-auto overflow-x-auto border-t border-transparent bg-background scrollbar-none lg:static lg:border-b" style={{
+
                 borderImage: 'linear-gradient(to right, transparent, hsl(var(--muted)), transparent) 1'
             }}>
-                <div className="flex items-center justify-around px-8 space-x-8">
+                <div className="flex items-center justify-around max-w-xl px-8 mx-auto space-x-8">
                     <NavLink href="/home/discover" icon={<Search size={20} />}>
                         Discover
                     </NavLink>
