@@ -3,6 +3,7 @@ import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { Wallet } from 'lucide-react'
 import { paymentTokens } from '@/constants/tokens'
 import { formatEther } from 'viem'
+import GradientAvatar from './GradientAvatar'
 
 
 
@@ -15,10 +16,10 @@ function ConnectWallet() {
     const { disconnect } = useDisconnect()
     return (
         <div className='flex items-center gap-1'>
-
-            {isConnected ? <div className="flex items-center justify-center gap-1 p-1 pr-4 ml-auto border rounded-full border-muted">
+            {address && <GradientAvatar address={address} size={36} />}
+            {isConnected ? <div className="flex items-center justify-center gap-1 p-1 pr-4 ml-auto border rounded-full border-primary">
                 <div
-                    className='flex items-center justify-center rounded-full text-muted w-9 h-9' >
+                    className='flex items-center justify-center rounded-full text-primary w-9 h-9' >
                     <Wallet size={20} />
                 </div>
                 <button onClick={() => {

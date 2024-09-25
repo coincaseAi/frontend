@@ -1,6 +1,6 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { cookieStorage, createStorage } from 'wagmi'
-import { mainnet, sepolia, Chain, polygon } from 'wagmi/chains'
+import { mainnet, sepolia, polygon } from 'wagmi/chains'
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 
@@ -15,12 +15,12 @@ export const metadata = {
 
 // Define the rushiLocal chain
 const mintflick = {
-    id: 169420,
-    name: 'mintflick aws',
-    network: 'mintflick aws',
+    id: 978171,
+    name: 'mintflick',
+    network: 'mintflick',
     nativeCurrency: {
         decimals: 18,
-        name: 'mintflick aws',
+        name: 'mintflick',
         symbol: 'ETH',
     },
     rpcUrls: {

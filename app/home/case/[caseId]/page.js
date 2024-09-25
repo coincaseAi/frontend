@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CaseAssetTable from '@/components/CaseAssetTable';
 import InvestmentCard from '@/components/InvestmentCard';
 import SubscribeCard from '@/components/SubscribeCard'; // You'll need to create this component
@@ -14,19 +13,15 @@ import { useReadContract, useAccount } from 'wagmi';
 import caseAbi from '@/config/caseAbi.json';
 import { caseFactoryAddress } from '@/constants/mockData';
 import abi from '@/config/abi.json';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import EditCaseComponent from '@/components/EditCaseComponent';
 import RebalanceCard from '@/components/RebalanceCard';
 import WithdrawFundsButton from '@/components/WithdrawFundsButton';
-import UpgradeToPublicButton from '@/components/UpgradeToPublicButton';
 import GradientAvatar from '@/components/GradientAvatar';
+import LineChart from '@/components/LineChart';
 
 export default function CaseDetails() {
     const router = useRouter();
     const params = useParams();
     const { address } = useAccount();
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [totalInvestment, setTotalInvestment] = useState(null);
     const [prevWeights, setPrevWeights] = useState(null);
     const [data, setData] = useState(null);
@@ -57,8 +52,8 @@ export default function CaseDetails() {
 
     useEffect(() => {
         if (caseData && address) {
-            const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionsAmount, isPublic, subcriptionTime] = caseData;
-            setData({ caseName, caseOwner, tokens, weights, isPublic, subcriptionTime, paymentToken });
+            const [caseName, caseOwner, tokens, weights, paymentToken, subscriptionFees, isPublic, subcriptionTime] = caseData;
+            setData({ caseName, caseOwner, tokens, weights, isPublic, subcriptionTime, paymentToken, subscriptionFees });
             setIsCreator(caseOwner.toLowerCase() === address?.toLowerCase());
         }
     }, [caseData, address]);
@@ -77,7 +72,6 @@ export default function CaseDetails() {
         }
     }, [prevWeights, data?.weights]);
 
-    const closeDrawer = () => setIsDrawerOpen(false);
 
     if (isFetching) {
         return <div className="p-3 space-y-4">
@@ -99,19 +93,15 @@ export default function CaseDetails() {
                 Back
             </Button>
 
-            <div className="container mx-auto">
+            <div className="container mx-auto mt-4">
                 <div className="flex flex-col items-start justify-between mb-6 md:flex-row">
                     <div className="flex flex-col w-full gap-2">
                         <div className="flex items-center w-full gap-2">
                             <span className="text-xl font-bold">{data.caseName}</span>
-                            <Badge variant={data.isPublic ? "default" : "secondary"} className="ml-2">
-                                {data.isPublic ? "Public" : "Private"}
-                            </Badge>
-                            {isCreator && (
-                                <Button className='ml-auto' variant="ghost" size="icon" onClick={() => setIsDrawerOpen(true)}>
-                                    <Pencil className="w-4 h-4" />
-                                </Button>
-                            )}
+                            {data.isPublic && !data.subscriptionFees.some(fee => fee !== 0n) ? <Badge variant={"secondary"} className="text-green-500 bg-green-500/10">
+                                Free Access
+                            </Badge> : null}
+
                         </div>
                         <div className="flex items-center gap-2 ">
                             <GradientAvatar address={data.caseOwner} size={40} />
@@ -121,6 +111,7 @@ export default function CaseDetails() {
                                     Creator of this case {isCreator ? "( You )" : ""}
                                 </span>
                             </div>
+                            <LineChart className='w-20 h-10 ml-auto' />
                         </div>
                     </div>
                 </div>
@@ -163,9 +154,7 @@ export default function CaseDetails() {
                                     caseId={params.caseId}
                                     caseWalletAddress={caseHoldingWallet}
                                 />
-                                {isCreator && !data.isPublic && (
-                                    <UpgradeToPublicButton caseId={params.caseId} />
-                                )}
+
                             </div>
                         </div>
                         <CaseAssetTable
@@ -184,28 +173,19 @@ export default function CaseDetails() {
                     <div className="mt-4">
                         <h2 className="px-4 mb-2 font-bold">Assets in this Case</h2>
                         <CaseAssetTable
-                            isSubscribed={isSubscribed}
                             weights={data.weights}
                             assets={data.tokens}
                             caseId={params.caseId}
+                            setTotalInvestment={setTotalInvestment}
+                            setPrevWeights={setPrevWeights}
+                            caseHoldingWallet={caseHoldingWallet}
                             showDetails={isCreator || isSubscribed}
                         />
                     </div>
                 )}
             </div>
 
-            {isCreator && (
-                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-                    <DrawerContent className="w-full max-w-md p-3 mx-auto">
-                        <EditCaseComponent
-                            caseId={params.caseId}
-                            currentTokens={data.tokens}
-                            currentWeights={data.weights}
-                            onClose={closeDrawer}
-                        />
-                    </DrawerContent>
-                </Drawer>
-            )}
+
         </>
     );
 }

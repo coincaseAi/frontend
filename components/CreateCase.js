@@ -141,6 +141,7 @@ export default function CreateCase({ onClose }) {
 
   const handleCreateCase = async () => {
     try {
+
       const tx = await writeContractAsync({
         abi: abi,
         address: caseFactoryAddress,
@@ -159,7 +160,7 @@ export default function CreateCase({ onClose }) {
         ],
         value: formData.isPublic ? parseEther("0.001") : 0
       });
-      console.log(tx);
+      console.log('create case', tx);
       toast.success(`Case created successfully! \n ${tx}`);
 
       onClose && onClose();

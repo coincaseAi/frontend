@@ -47,9 +47,8 @@ const CreatorsList = () => {
         creators.length === 0 ? (
             <p>No creators found</p>
         ) : (
-
-            creators.map((creator, index) => (
-                address !== creator ? <div key={creator} className="flex flex-col gap-2">
+            creators.filter(creator => creator !== address).map((creator, index) => (
+                <div key={creator} className="flex flex-col gap-2">
                     {/* <div className="hover:no-underline">
                         <div className="flex items-center space-x-4">
                             <Avatar>
@@ -66,9 +65,8 @@ const CreatorsList = () => {
                     <div> */}
                     <CreatorCases creatorAddress={creator} />
                     {/* </div> */}
-                </div> : null
+                </div>
             ))
-
         )
     );
 };
@@ -89,8 +87,8 @@ const CreatorCases = ({ creatorAddress }) => {
         }
     }, [casesData]);
 
-    if (isLoading) return <p>Loading cases...</p>;
-    if (isError) return <p>Error fetching cases</p>;
+    if (isLoading) return <p className='p-2 rounded-md text-muted-foreground bg-muted'>Loading cases...</p>;
+    if (isError) return <p className='p-2 rounded-md text-muted-foreground bg-muted'>Error fetching cases</p>;
 
     return (
         <div className="flex flex-col gap-2 mt-2">

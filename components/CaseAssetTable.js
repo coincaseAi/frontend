@@ -1,6 +1,6 @@
 'use client'
 
-import { availableTokens, WETH_ADDRESS } from '@/constants/tokens';
+import { availableTokens } from '@/constants/tokens';
 import React, { useEffect, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import abi from '@/config/abi.json';
@@ -9,12 +9,14 @@ import { caseFactoryAddress } from '@/constants/mockData';
 import { formatEther, formatUnits, parseEther, parseUnits } from 'viem';
 import { Skeleton } from './ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+const USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
 const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTotalInvestment, isSubscriptionActive }) => {
     const [rateInUSDT, setRateInUSDT] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [valueInUSD, setValueInUSD] = useState(0);
-    const USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+
 
     const { data: caseHolding, isError, isLoading, error } = useReadContract({
         address: caseHoldingWallet,
@@ -25,8 +27,8 @@ const AssetRow = ({ asset, caseAddress, caseHoldingWallet, weights, index, setTo
 
     // Define path based on asset symbol
     const path = asset.symbol === 'USDC'
-        ? [asset.address, USDT_ADDRESS] // Direct path for USDC
-        : [asset.address, USDT_ADDRESS]; // Direct path for other assets
+        ? [asset.address, WETH_ADDRESS, USDT_ADDRESS] // Direct path for USDC
+        : [asset.address, WETH_ADDRESS, USDT_ADDRESS]; // Direct path for other assets
 
     const { data: tokenRate, isError: rateError } = useReadContract({
         address: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', // Uniswap V2 Router address
@@ -145,12 +147,16 @@ function CaseAssetTable({ assets, weights, caseId, setTotalInvestment, setPrevWe
     useEffect(() => {
         if (previousWeights) {
             setPrevWeights(previousWeights);
+        } else {
+            setPrevWeights(weights);
         }
-    }, [previousWeights, setPrevWeights]);
+    }, [previousWeights, setPrevWeights, weights]);
 
     return (
         isLoading ? <Skeleton className='w-full h-6' /> :
-            isError ? <div>Error: {error.message}</div> :
+            isError ? <div className='p-4 text-center rounded-lg text-muted-foreground bg-muted/20'>
+                Invest in this case to see the assets
+            </div> :
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full overflow-hidden rounded-lg">
                         <thead className="bg-foreground/10">

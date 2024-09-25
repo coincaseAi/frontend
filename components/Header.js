@@ -27,8 +27,7 @@ function Header() {
     return (
         <header className="">
             <div className="container flex items-center justify-between gap-1 py-4 pr-4 mx-auto pl-7">
-
-                {address ? <GradientAvatar address={address} size={36} /> : <div className="text-xl font-bold text-primary">Coincase</div>}
+                <div className="text-xl font-bold text-primary">Coincase</div>
                 {/* <w3m-button /> */}
                 <ConnectWallet />
             </div>
