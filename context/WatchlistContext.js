@@ -15,6 +15,10 @@ export const WatchlistProvider = ({ children }) => {
     }
   }, []);
 
+  const isWatchlisted = (caseId) => {
+    return watchlist.includes(caseId);
+  };
+
   const toggleWatchlist = (caseId) => {
     setWatchlist((prev) => {
       const isWatchlisted = prev.includes(caseId);
@@ -31,7 +35,7 @@ export const WatchlistProvider = ({ children }) => {
   };
 
   return (
-    <WatchlistContext.Provider value={{ watchlist, toggleWatchlist }}>
+    <WatchlistContext.Provider value={{ watchlist, toggleWatchlist, isWatchlisted }}>
       {children}
     </WatchlistContext.Provider>
   );

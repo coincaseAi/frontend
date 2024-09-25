@@ -17,6 +17,7 @@ import RebalanceCard from '@/components/RebalanceCard';
 import WithdrawFundsButton from '@/components/WithdrawFundsButton';
 import GradientAvatar from '@/components/GradientAvatar';
 import LineChart from '@/components/LineChart';
+import AddToWatchList from '@/components/AddToWatchList';
 
 export default function CaseDetails() {
     const router = useRouter();
@@ -101,6 +102,7 @@ export default function CaseDetails() {
                             {data.isPublic && !data.subscriptionFees.some(fee => fee !== 0n) ? <Badge variant={"secondary"} className="text-green-500 bg-green-500/10">
                                 Free Access
                             </Badge> : null}
+                            <AddToWatchList className='ml-auto' caseId={params.caseId} />
 
                         </div>
                         <div className="flex items-center gap-2 ">

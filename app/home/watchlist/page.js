@@ -8,19 +8,26 @@ import { mockCases } from '@/constants/mockData';
 export default function WatchlistPage() {
     const { watchlist, toggleWatchlist } = useWatchlist();
 
-    const handleToggleWatchlist = (caseId) => {
-        toggleWatchlist(caseId);
-        toast.success('Removed from watchlist');
-    };
 
-    const watchlistedCases = mockCases.filter(caseData => watchlist.includes(caseData.id));
+
+
 
     return (
         <>
             <div className="flex flex-col gap-0.5 mb-4">
                 <h1 className="text-2xl font-semibold ">Watchlist</h1>
                 <p className="text-sm text-muted">View your watchlist cases , you can remove them anytime</p>
+
             </div>
+            {watchlist.length > 0 ? <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                {
+                    watchlist?.map((caseId) => (
+                        <CaseCard key={caseId} caseId={caseId} />
+                    ))
+                }
+            </div> : <div className="flex items-center justify-center h-full p-4 rounded-md bg-muted/20">
+                <span className="text-muted-foreground">No cases in your watchlist</span>
+            </div>}
         </>
     )
 }
