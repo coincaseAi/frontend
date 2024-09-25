@@ -13,9 +13,9 @@ function AddToWatchList(params) {
                     e.preventDefault(); // Prevent navigation when clicking the bookmark
                     toggleWatchlist(caseId);
                 }}
-                className={`z-50 transition-colors text-primary hover:text-primary-dark ${className}`}
+                className={`z-50 transition-colors  ${className}`}
             >
-                <Bookmark className={`w-6 h-6 ${isWatchlisted(caseId) ? 'fill-primary stroke-primary' : 'stroke-muted-foreground  group-hover:visible lg:invisible'} `} />
+                <Bookmark className={`w-6 h-6 ${isWatchlisted(caseId) ? 'fill-primary stroke-primary' : 'fill-muted stroke-muted-foreground'} `} />
             </button>
             : null
     )
