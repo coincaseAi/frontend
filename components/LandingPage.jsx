@@ -180,9 +180,9 @@ export function LandingPage() {
                   </div>
                   <div className='w-full h-full pl-8 ml-auto md:pl-16'>
                     <img
-                      src='https://uizard.io/static/142f32d612008a9f23afcfce4e0267d2/a2fef/6130ef60bb0b6a414eabe402e1bd1d6968112fd9-622x454.webp'
+                      src='./images/CaseDetails.png'
                       alt='Choose a Coincase'
-                      className='w-full h-full rounded-br-2xl'
+                      className='w-full h-full rounded-tl-2xl rounded-br-2xl'
                     />
                   </div>
                 </Card>
