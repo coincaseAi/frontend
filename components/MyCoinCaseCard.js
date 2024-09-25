@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import VolatilityBadge from './VolatilityBadge';
@@ -19,6 +19,7 @@ import { mockCases } from '@/constants/mockData';
 import { useAccount, useReadContract } from 'wagmi';
 import caseAbi from '@/config/caseAbi.json';
 import { Badge } from './ui/badge';
+import { useRouter } from 'next/navigation';
 
 ChartJS.register(
   CategoryScale,
@@ -31,6 +32,7 @@ ChartJS.register(
 );
 
 const MyCoinCaseCard = ({ caseId }) => {
+  const router = useRouter()
   const { address } = useAccount()
 
   const { data, isError, isLoading, isFetching, Error } = useReadContract({
@@ -40,7 +42,7 @@ const MyCoinCaseCard = ({ caseId }) => {
     functionName: 'getCaseInfo',
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log(data)
     console.log(Error)
   }, [isFetching, Error]);
@@ -83,23 +85,23 @@ const MyCoinCaseCard = ({ caseId }) => {
   };
 
   return (
-    caseOwner === address || isPublic ? <Card className="relative border-transparent hover:border-muted">
-      <CardHeader className="flex flex-row items-center justify-between p-0 space-y-0 ">
+    caseOwner === address || isPublic ? <div onClick={() => router.push(`case/${caseId}`)} className="relative p-1 cursor-pointer rounded-xl bg-muted/20 hover:bg-muted/40">
+      <div className="flex flex-row items-center justify-between p-0 space-y-0 ">
         <div className="flex items-center w-full gap-4">
           <Avatar className="w-16 h-16 rounded-lg">
             <AvatarImage src={dummyData.avatar} alt={caseName} className="rounded-lg" />
             <AvatarFallback className="rounded-lg">{caseName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className='flex flex-col gap-2' >
-            <CardTitle >
-              <Link href={`case/${caseId}`} passHref>
+            <div >
+              <span className='font-medium '>
                 {caseName}
-              </Link>
+              </span>
               <Badge variant={isPublic ? "default" : "secondary"} className="absolute text-white top-1 right-1 ">
                 {isPublic ? "Public" : "Private"}
               </Badge>
-            </CardTitle>
-            <CardDescription>
+            </div>
+            <div>
               <div className="flex items-center space-x-1">
                 <div className='flex -space-x-2'>
                   {tokens.slice(0, 3).map((asset, index) => {
@@ -121,40 +123,13 @@ const MyCoinCaseCard = ({ caseId }) => {
                   {tokens.length} {tokens.length === 1 ? 'asset' : 'assets'}
                 </span>
               </div>
-            </CardDescription>
-            {/* <CardDescription>{dummyData.description}</CardDescription> */}
+            </div>
           </div>
-          {/* <div className="flex items-center w-20 h-10 ml-auto">
-            <Line data={lineData} options={lineOptions} />
-          </div> */}
-        </div>
-      </CardHeader>
-      {/* <CardContent className="p-3">
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <span className="text-xs text-muted-foreground">Invested</span>
-            <p className="text-base font-medium">${dummyData.invested?.toFixed(2)}</p>
-          </div>
-          <div>
-            <span className="text-xs text-muted-foreground">Value</span>
-            <p className="text-base font-medium">${dummyData.value?.toFixed(2)}</p>
-          </div>
-          <div>
-            <span className="text-xs text-muted-foreground">Returns</span>
-            <p className={`text-base font-medium ${dummyData.returns >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-              {dummyData.returns >= 0 ? '+' : ''}{dummyData.returns?.toFixed(2)}%
-            </p>
-          </div>
-          <div>
-            <span className="text-xs text-muted-foreground">Volatility</span>
-            <VolatilityBadge volatility={dummyData.volatility} />
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between p-2">
 
-      </CardFooter> */}
-    </Card> : null
+        </div>
+      </div>
+
+    </div> : null
   );
 };
 

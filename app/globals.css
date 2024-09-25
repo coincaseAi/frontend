@@ -67,3 +67,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.border-gradient {
+  border-image: linear-gradient(
+      to right,
+      transparent,
+      hsl(var(--muted)),
+      transparent
+    )
+    1;
+}

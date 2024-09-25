@@ -47,9 +47,12 @@ export default function DiscoverPage() {
                     />
                 ))}
             </div> */}
+            {/* <span>
+                <h2 className="text-[10px] font-medium uppercase text-muted-foreground">Featured Cases</h2>
+            </span> */}
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 <CreatorsList />
             </div>
-        </>
+        </ >
     )
 }
