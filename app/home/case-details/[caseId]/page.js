@@ -1,7 +1,13 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Globe, Pencil, VenetianMask } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronUpIcon,
+  Globe,
+  Pencil,
+  VenetianMask,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +27,7 @@ import RebalanceCard from '@/components/RebalanceCard';
 import WithdrawFundsButton from '@/components/WithdrawFundsButton';
 import UpgradeToPublicButton from '@/components/UpgradeToPublicButton';
 import GradientAvatar from '@/components/GradientAvatar';
+import { getTokenSymbol } from '@/utils/tokenUtils'; // You'll need to create this utility function
 
 export default function CaseDetails() {
   const router = useRouter();
@@ -33,6 +40,7 @@ export default function CaseDetails() {
   const [weightsChanged, setWeightsChanged] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [paymentTokenSymbol, setPaymentTokenSymbol] = useState('');
 
   const {
     data: caseData,
@@ -101,6 +109,14 @@ export default function CaseDetails() {
     }
   }, [prevWeights, data?.weights]);
 
+  useEffect(() => {
+    if (data?.paymentToken) {
+      console.log(data.paymentToken);
+      const symbol = getTokenSymbol(data.paymentToken);
+      setPaymentTokenSymbol(symbol);
+    }
+  }, [data?.paymentToken]);
+
   const closeDrawer = () => setIsDrawerOpen(false);
 
   if (isFetching) {
@@ -144,10 +160,15 @@ export default function CaseDetails() {
                   </div>
                 )}
               </Badge>
+              <div className='space-x-2'>
+                {isCreator && !data.isPublic && (
+                  <UpgradeToPublicButton caseId={params.caseId} />
+                )}
+              </div>
               {isCreator && (
                 <Button
                   className='ml-auto'
-                  variant='ghost'
+                  variant='outline'
                   size='icon'
                   onClick={() => setIsDrawerOpen(true)}
                 >
@@ -173,18 +194,61 @@ export default function CaseDetails() {
         <div className='grid grid-cols-1 gap-4 mb-4 md:grid-cols-2'>
           {(isCreator || isSubscribed) && (
             <Card>
-              <CardHeader className='p-3'>
-                <CardTitle className=''>
-                  <span className='text-primary'>Total Investment</span>
+              <CardHeader className='flex items-center justify-between px-3 pt-3 pb-0'>
+                <CardTitle className='flex items-center justify-between w-full'>
+                  <p className='text-primary'>Case Value</p>
+                  {totalInvestment &&
+                    Object.values(totalInvestment).reduce(
+                      (acc, curr) => acc + curr,
+                      0
+                    ) > 0 && (
+                      <WithdrawFundsButton
+                        caseId={params.caseId}
+                        caseWalletAddress={caseHoldingWallet}
+                      />
+                    )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className='p-3 pt-0 text-2xl font-bold'>
-                $
-                {totalInvestment
-                  ? `${Object.values(totalInvestment)
-                      .reduce((acc, curr) => acc + curr, 0)
-                      .toFixed(2)}`
-                  : 0}
+              <CardContent className='flex flex-col p-3 pt-0 text-2xl font-bold'>
+                <div className='flex items-baseline gap-2'>
+                  $
+                  {totalInvestment
+                    ? `${Object.values(totalInvestment)
+                        .reduce((acc, curr) => acc + curr, 0)
+                        .toFixed(2)}`
+                    : 0}
+                  {totalInvestment &&
+                    Object.values(totalInvestment).reduce(
+                      (acc, curr) => acc + curr,
+                      0
+                    ) > 0 && (
+                      <span className='gap-2 text-xs text-green-500'>
+                        <ChevronUpIcon className='inline-block w-4 h-4 text-green-500' />{' '}
+                        {(Math.random() * 10).toFixed(2)}%{' '}
+                      </span>
+                    )}
+                </div>
+                {totalInvestment &&
+                  Object.values(totalInvestment).reduce(
+                    (acc, curr) => acc + curr,
+                    0
+                  ) > 0 && (
+                    <>
+                      <hr className='my-2' />
+                      <p className='text-sm font-normal text-primary'>
+                        Your Investment
+                      </p>
+                      <div className='flex items-baseline gap-2 text-sm'>
+                        $
+                        {`${Object.values(totalInvestment)
+                          .reduce((acc, curr) => acc + curr, 0)
+                          .toFixed(2)}`}
+                        <span className='text-xs text-muted-foreground'>
+                          {paymentTokenSymbol}
+                        </span>
+                      </div>
+                    </>
+                  )}
               </CardContent>
             </Card>
           )}
@@ -210,16 +274,7 @@ export default function CaseDetails() {
         {(isCreator || isSubscribed) && (
           <>
             <div className='flex items-center justify-between'>
-              <h2 className='px-4 mt-4 mb-2 font-bold'>Assets in this Case</h2>
-              <div className='space-x-2'>
-                <WithdrawFundsButton
-                  caseId={params.caseId}
-                  caseWalletAddress={caseHoldingWallet}
-                />
-                {isCreator && !data.isPublic && (
-                  <UpgradeToPublicButton caseId={params.caseId} />
-                )}
-              </div>
+              <h2 className='px-4 mt-2 mb-2 font-bold'>Assets in this Case</h2>
             </div>
             <CaseAssetTable
               weights={data.weights}

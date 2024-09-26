@@ -76,7 +76,7 @@ const CaseCard = ({ caseId }) => {
             </div>
           </div>
         </div>
-        <Skeleton className='absolute w-20 h-10 bottom-2 right-2' />
+        <Skeleton className='absolute w-20 h-10 bottom-1 right-1' />
       </div>
     );
   }
