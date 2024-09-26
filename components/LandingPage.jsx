@@ -187,7 +187,7 @@ export function LandingPage() {
                   </div>
                 </Card>
                 <Card className='flex flex-col h-full col-span-3 text-left md:col-span-2'>
-                  <div className='px-6 pt-4 md:px-12 md:pt-8'>
+                  <div className='px-6 pt-4 md:px-6 md:pt-8'>
                     <CardHeader>
                       <CardTitle className='text-2xl font-semibold text-white'>
                         Diversify your portfolio
@@ -200,11 +200,11 @@ export function LandingPage() {
                       </p>
                     </CardContent>
                   </div>
-                  <div className='w-full h-full pl-8 ml-auto md:pl-16'>
+                  <div className='w-full h-full p-4 mt-auto'>
                     <img
-                      src='https://uizard.io/static/be38f39ffb48b08064775fa616312142/12ec6/b118cff69342110d2caf4b7ed11d62215510394e-862x648.webp'
+                      src='./images/diverse.webp'
                       alt='Choose a Coincase'
-                      className='w-full h-full pl-12 ml-auto rounded-br-2xl '
+                      className='object-contain w-auto h-auto max-w-full max-h-full '
                     />
                   </div>
                 </Card>
@@ -246,11 +246,11 @@ export function LandingPage() {
                       </p>
                     </CardContent>
                   </div>
-                  <div className=''>
+                  <div className='p-4'>
                     <img
-                      src='https://uizard.io/static/be38f39ffb48b08064775fa616312142/12ec6/b118cff69342110d2caf4b7ed11d62215510394e-862x648.webp'
+                      src='./images/portfolio.png'
                       alt='Choose a Coincase'
-                      className='w-full h-full pl-12 ml-auto rounded-br-2xl '
+                      className='object-contain w-auto h-auto max-w-full max-h-full rounded-xl'
                     />
                   </div>
                 </Card>
