@@ -305,7 +305,7 @@ export default function CreateCase({ onClose }) {
               </div>
             </div>
             {remainingWeight > 0 && (
-              <div className='flex flex-col w-full gap-4 pt-8 '>
+              <div className='flex flex-col w-full gap-2 pt-8 '>
                 <div className='flex items-center justify-center gap-2 -mt-6 text-muted-foreground'>
                   <div className='flex-grow h-0.5 rounded-full bg-muted'>
                   </div>
@@ -313,34 +313,53 @@ export default function CreateCase({ onClose }) {
                   <div className='flex-grow h-0.5 rounded-full bg-muted'>
                   </div>
                 </div>
-                <Select onValueChange={handleTokenSelect}>
-                  <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Select a token' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <Input
-                      placeholder='Search tokens...'
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className='mb-2'
-                    />
-                    <div className='max-h-[200px] overflow-y-auto'>
-                      {filteredTokens.map((token) => (
-                        <SelectItem key={token.address} value={token.address}>
-                          <div className='flex items-center gap-1'>
-                            <Avatar className='w-4 h-4 bg-white'>
-                              <AvatarImage src={token?.logoURI} alt={token.name} />
-                              <AvatarFallback>
-                                {token.symbol.slice(0, 2)}
-                              </AvatarFallback>
-                            </Avatar>
-                            {token.name} ({token.symbol})
-                          </div>
-                        </SelectItem>
-                      ))}
+
+
+                {selectedToken && <div className='flex items-center gap-1 px-2 py-1 border rounded-md border-muted'>
+                  <div className='flex flex-col flex-grow gap-1'>
+                    <span className='text-xs text-muted-foreground'>
+                      Selected Token
+                    </span>
+                    <div className='flex items-center gap-1'>
+                      <Avatar className='w-4 h-4 bg-white'>
+                        <AvatarImage src={selectedToken?.logoURI} alt={selectedToken.name} />
+                        <AvatarFallback>
+                          {selectedToken.symbol.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {selectedToken.name} ({selectedToken.symbol})
                     </div>
-                  </SelectContent>
-                </Select>
+                  </div>
+                  <Button onClick={() => { setSelectedToken(null); setSearchTerm('') }} size='icon' variant='ghost'><X className='w-4 h-4' /></Button>
+
+                </div>}
+                {!selectedToken && <div className='flex flex-col  gap-0.5'>
+                  <Input
+                    placeholder='Search token'
+                    value={searchTerm}
+                    onChange={(e) => { e.preventDefault(); setSearchTerm(e.target.value) }}
+                    className='mb-2'
+                  // Prevent focus from shifting when typing
+
+                  />
+                  <div className='max-h-[160px] w-full overflow-y-auto p-1 rounded-md border border-muted'>
+
+                    {filteredTokens.length === 0 && <div className='text-muted-foreground'>No tokens found</div>}
+                    {filteredTokens.map((token) => (
+
+                      <div key={token.address} onClick={() => { handleTokenSelect(token.address); setSearchTerm('') }} className='flex items-center gap-1 p-1 rounded-md hover:bg-muted'>
+                        <Avatar className='w-6 h-6 bg-white'>
+                          <AvatarImage src={token?.logoURI} alt={token.name} />
+                          <AvatarFallback>
+                            {token.symbol.slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {token.name} ({token.symbol})
+                      </div>
+
+                    ))}
+                  </div>
+                </div>}
 
                 {selectedToken && (
                   <div className='grid w-full items-center gap-1.5'>
