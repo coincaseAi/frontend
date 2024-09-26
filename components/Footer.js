@@ -5,7 +5,7 @@ import ToggleTheme from './ToggleTheme';
 const Footer = () => {
   return (
     <footer className='border-t'>
-      <div className='container py-8 pr-4 mx-auto pl-7'>
+      <div className='container px-4 py-8 mx-auto'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
           <div>
             <h3 className='mb-4 font-medium'>About Coincase</h3>

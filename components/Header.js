@@ -21,9 +21,8 @@ function NavLink({ href, children, icon }) {
   return (
     <Link
       href={href}
-      className={` ${
-        isActive ? 'opacity-100 border-b-2 border-white' : 'opacity-20 '
-      } text-foreground flex flex-col items-center justify-center gap-1 py-4 text-xs  focus:text-foreground`}
+      className={` ${isActive ? 'opacity-100 border-b-2 border-white' : 'opacity-20 '
+        } text-foreground flex flex-col items-center justify-center gap-1 py-4 text-xs  focus:text-foreground`}
     >
       {icon}
       {children}
@@ -34,7 +33,7 @@ function Header() {
   const { address } = useAccount();
   return (
     <header className=''>
-      <div className='container flex items-center justify-between gap-1 py-4 pr-4 mx-auto pl-7'>
+      <div className='container flex items-center justify-between gap-1 px-4 py-4 mx-auto '>
         <div className='text-xl font-bold text-primary'>Coincase</div>
         {/* <w3m-button /> */}
         <ConnectWallet />
